@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">pjsipDemo</string>
+
+    <string name="call">Call</string>
+    <string name="user_name">User Name</string>
+    <string name="password">Password</string>
+    <string name="domain">Domain</string>
+    <string name="submit">Submit</string>
+    <string name="setting">setting</string>
+    <string name="user">user</string>
+    <string name="exit">exit</string>
+</resources>
