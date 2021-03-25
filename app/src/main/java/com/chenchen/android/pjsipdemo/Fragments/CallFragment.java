@@ -38,7 +38,6 @@ public class CallFragment extends Fragment {
     private MyAccount acc;
 
     private Handler handler = new Handler();
-    private static final int REQUEST_CODE = 1;
 
     User mUser;
 
@@ -57,6 +56,7 @@ public class CallFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUser = User.getInstance(getActivity());
+        acc = MyAccount.getInstance(mUser);
 
         try {
             init();

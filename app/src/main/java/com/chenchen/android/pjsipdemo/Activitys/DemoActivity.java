@@ -5,11 +5,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,6 +31,7 @@ import com.google.android.material.navigation.NavigationView;
 public class DemoActivity extends AppCompatActivity implements
         RadioGroup.OnCheckedChangeListener,
         ViewPager.OnPageChangeListener {
+
 
     public static final int PAGE_CONTACT = 0;
     public static final int PAGE_PHONE = 1;
@@ -54,6 +59,8 @@ public class DemoActivity extends AppCompatActivity implements
     // domain
     private User mUser;
     private MyAccount acc;
+    private Handler mHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +68,8 @@ public class DemoActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_fragment_bottom_nv);
         // 获取单例
         mUser = User.getInstance(this);
-        acc = MyAccount.getInstance(mUser);
+        mHandler = new Handler();
+
 
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         bindViews();
@@ -69,6 +77,11 @@ public class DemoActivity extends AppCompatActivity implements
 
         // 请求权限
         myRequestPermissions();
+
+        acc = MyAccount.getInstance(mUser);
+        acc.setHandler(mHandler);
+        acc.setToolbar(mToolbar);
+
     }
 
 
@@ -95,10 +108,7 @@ public class DemoActivity extends AppCompatActivity implements
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        mToolbar.setOnClickListener(v1 -> {
-            Toast.makeText(this, "注册", Toast.LENGTH_SHORT).show();
-            acc.register();
-        });
+        mToolbar.setOnClickListener(v1 -> acc.register());
 
         // 侧划栏
         navigation_view = findViewById(R.id.navigation_view);

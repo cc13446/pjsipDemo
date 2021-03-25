@@ -2,6 +2,11 @@ package com.chenchen.android.pjsipdemo.Domain;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
+
+import androidx.appcompat.widget.Toolbar;
+
+import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
 
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.AccountConfig;
@@ -12,15 +17,26 @@ import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnRegStateParam;
 import org.pjsip.pjsua2.pjsip_status_code;
 
+import java.util.Date;
+
 
 public class MyAccount extends Account {
 
     public static MyAccount acc;
     private User mUser;
-
+    private Handler mHandler;
+    private Toolbar mToolbar;
 
     public void setUser(User user) {
         mUser = user;
+    }
+
+    public void setHandler(Handler handler) {
+        mHandler = handler;
+    }
+
+    public void setToolbar(Toolbar toolbar) {
+        mToolbar = toolbar;
     }
 
     public static MyAccount getInstance(User user){
@@ -33,7 +49,11 @@ public class MyAccount extends Account {
 
     @Override
     public void onRegState(OnRegStateParam prm) {
-
+        if (prm.getCode().swigValue() / 100 == 2) {
+            mHandler.post(() -> mToolbar.setTitle("REGISTER_SUCCESS"));
+        } else {
+            mHandler.post(() -> mToolbar.setTitle("REGISTER_FAIL"));
+        }
 
     }
 
@@ -47,7 +67,7 @@ public class MyAccount extends Account {
         try {
             call.answer(cprm);
         }catch (Exception e){
-
+            System.out.println(e.toString());
         }
 
     }
