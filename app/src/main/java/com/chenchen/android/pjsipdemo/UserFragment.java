@@ -52,21 +52,17 @@ public class UserFragment extends Fragment {
                 Toast.makeText(getContext(),"User name is empty",Toast.LENGTH_SHORT).show();
                 return;
             }
-            else mUser.setUserName(userName);
-
             String passWord = mPassWordText.getText().toString();
             if(0 == passWord.length()){
                 Toast.makeText(getContext(),"Pass word is empty",Toast.LENGTH_SHORT).show();
                 return;
             }
-            else mUser.setPassWord(passWord);
-
             String url = mUrlText.getText().toString();
             if(0 == url.length()){
                 Toast.makeText(getContext(),"Domain is empty",Toast.LENGTH_SHORT).show();
                 return;
             }
-            else mUser.setUrl(url);
+            mUser.modifyUser(userName, passWord, url);
             Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_OK);
             getActivity().finish();
         });

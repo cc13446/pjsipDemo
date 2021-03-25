@@ -2,7 +2,6 @@ package com.chenchen.android.pjsipdemo;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import java.util.Objects;
 import org.pjsip.pjsua2.*;
 
 
-public class DemoFragment extends Fragment {
+public class CallFragment extends Fragment {
 
     private TextView iPAddress;
     private Button callButton;
@@ -93,12 +92,12 @@ public class DemoFragment extends Fragment {
 
         }
     }
-    public DemoFragment() {
+    public CallFragment() {
 
     }
 
-    public static DemoFragment newInstance() {
-        DemoFragment fragment = new DemoFragment();
+    public static CallFragment newInstance() {
+        CallFragment fragment = new CallFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -120,7 +119,7 @@ public class DemoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_demo, container, false);
+        View v = inflater.inflate(R.layout.fragment_call, container, false);
 
         // 主内容
         iPAddress = (TextView)v.findViewById(R.id.IPAddressText);

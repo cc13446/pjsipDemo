@@ -64,4 +64,10 @@ public class User {
         ed.commit();
         mUrl = url;
     }
+
+    public void modifyUser(String userName, String passWord, String url) {
+        setUserName(userName);
+        setPassWord(passWord);
+        setUrl(url);
+    }
 }

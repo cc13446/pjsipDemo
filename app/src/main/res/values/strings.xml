@@ -9,4 +9,10 @@
     <string name="setting">setting</string>
     <string name="user">user</string>
     <string name="exit">exit</string>
+    <string name="contact">联系人</string>
+    <string name="phone">电话</string>
+    <string name="message">信息</string>
+    <string name="record">通话记录</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
