@@ -1,8 +1,14 @@
-package com.chenchen.android.pjsipdemo;
+package com.chenchen.android.pjsipdemo.Activitys;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
+import com.chenchen.android.pjsipdemo.Fragments.CallFragment;
+import com.chenchen.android.pjsipdemo.Fragments.ContactFragment;
+import com.chenchen.android.pjsipdemo.Fragments.MessageFragment;
+import com.chenchen.android.pjsipdemo.Fragments.RecordFragment;
 
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 

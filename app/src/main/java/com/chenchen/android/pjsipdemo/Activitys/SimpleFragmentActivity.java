@@ -1,10 +1,12 @@
-package com.chenchen.android.pjsipdemo;
+package com.chenchen.android.pjsipdemo.Activitys;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import com.chenchen.android.pjsipdemo.R;
 
 public abstract class SimpleFragmentActivity extends AppCompatActivity {
     protected abstract Fragment createFragment();

@@ -22,6 +22,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".DemoApplication"
@@ -33,8 +34,8 @@
         android:theme="@style/Theme.PjsipDemo">
 
 
-        <activity android:name=".UserActivity" />
-        <activity android:name=".DemoActivity">
+        <activity android:name=".Activitys.UserActivity" />
+        <activity android:name=".Activitys.DemoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

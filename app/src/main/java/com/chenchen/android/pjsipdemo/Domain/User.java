@@ -1,9 +1,7 @@
-package com.chenchen.android.pjsipdemo;
+package com.chenchen.android.pjsipdemo.Domain;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class User {
 
@@ -23,6 +21,7 @@ public class User {
         mPref = pref;
         ed = mPref.edit();
     }
+
 
     public static User getInstance(Context context){
         if(null == mUser){

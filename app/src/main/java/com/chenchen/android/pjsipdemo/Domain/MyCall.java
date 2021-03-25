@@ -1,4 +1,4 @@
-package com.chenchen.android.pjsipdemo;
+package com.chenchen.android.pjsipdemo.Domain;
 
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.AudDevManager;

@@ -1,4 +1,4 @@
-package com.chenchen.android.pjsipdemo;
+package com.chenchen.android.pjsipdemo.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,12 +13,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chenchen.android.pjsipdemo.R;
+import com.chenchen.android.pjsipdemo.Domain.User;
+
 import java.util.Objects;
 
 
 public class UserFragment extends Fragment {
 
-    private  User mUser;
+    private User mUser;
 
     private TextView mUserNameText;
     private TextView mPassWordText;
@@ -26,7 +29,7 @@ public class UserFragment extends Fragment {
     private Button mSubmitBtn;
 
     public UserFragment(Context context) {
-        mUser = User.getInstance(context);
+        mUser = User.getInstance(getActivity());
     }
 
 
