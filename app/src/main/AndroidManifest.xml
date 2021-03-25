@@ -35,6 +35,7 @@
 
 
         <activity android:name=".Activitys.UserActivity" />
+        <activity android:name=".Activitys.CallListenActivity" />
         <activity android:name=".Activitys.DemoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
