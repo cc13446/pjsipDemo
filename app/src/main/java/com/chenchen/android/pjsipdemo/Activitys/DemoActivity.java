@@ -81,9 +81,13 @@ public class DemoActivity extends AppCompatActivity implements
         acc = MyAccount.getInstance(mUser);
         acc.setHandler(mHandler);
         acc.setToolbar(mToolbar);
-
+        acc.register();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     private void bindViews() {
         rg_tab_bar = (RadioGroup) findViewById(R.id.rg_tab_bar);
