@@ -12,7 +12,7 @@
     <string name="contact">联系人</string>
     <string name="phone">电话</string>
     <string name="message">信息</string>
-    <string name="record">通话记录</string>
+    <string name="record">对讲</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_contact">Add</string>
