@@ -24,20 +24,12 @@ public class MyAccount extends Account {
 
     public static MyAccount acc;
     private User mUser;
-    private Handler mHandler;
-    private Toolbar mToolbar;
+    private int mCallId;
 
     public void setUser(User user) {
         mUser = user;
     }
 
-    public void setHandler(Handler handler) {
-        mHandler = handler;
-    }
-
-    public void setToolbar(Toolbar toolbar) {
-        mToolbar = toolbar;
-    }
 
     public static MyAccount getInstance(User user){
         if(null == acc){
@@ -50,17 +42,27 @@ public class MyAccount extends Account {
     @Override
     public void onRegState(OnRegStateParam prm) {
         if (prm.getCode().swigValue() / 100 == 2) {
-            mHandler.post(() -> mToolbar.setTitle("REGISTER_SUCCESS"));
+            DemoActivity.getInstance().getHandler().post(() -> DemoActivity.getInstance().setToolbarState("REGISTER_SUCCESS"));
         } else {
-            mHandler.post(() -> mToolbar.setTitle("REGISTER_FAIL"));
+            DemoActivity.getInstance().getHandler().post(() -> DemoActivity.getInstance().setToolbarState("REGISTER_FAIL"));
         }
 
     }
 
     @Override
     public void onIncomingCall(OnIncomingCallParam prm) {
+        mCallId =  prm.getCallId();
 
-        Call call = new MyCall(acc, prm.getCallId());
+        String info = prm.getRdata().getWholeMsg();
+        int i = info.lastIndexOf("Contact:");
+        info = info.substring(i, i + 30);
+
+        DemoActivity.getInstance().startCallListenActivity(info);
+
+    }
+
+    public void answer(){
+        Call call = new MyCall(acc, mCallId);
         CallOpParam cprm = new CallOpParam();
         cprm.setStatusCode(pjsip_status_code.PJSIP_SC_OK);
 
@@ -69,18 +71,28 @@ public class MyAccount extends Account {
         }catch (Exception e){
             System.out.println(e.toString());
         }
+    }
+    public void hangUp(){
+        Call call = new MyCall(acc, mCallId);
+        CallOpParam cprm = new CallOpParam();
+        cprm.setStatusCode(pjsip_status_code.PJSIP_SC_BUSY_HERE);
 
+        try {
+            call.hangup(cprm);
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
     }
 
     public void register() {
         try {
-            AccountConfig acfg = new AccountConfig();
-            acfg.setIdUri("sip:" + mUser.getUserName() + "@" + mUser.getUrl());
-            acfg.getRegConfig().setRegistrarUri("sip:" + mUser.getUrl());
+            AccountConfig accountConfig = new AccountConfig();
+            accountConfig.setIdUri("sip:" + mUser.getUserName() + "@" + mUser.getUrl());
+            accountConfig.getRegConfig().setRegistrarUri("sip:" + mUser.getUrl());
             AuthCredInfo cred = new AuthCredInfo("digest", "*", mUser.getUserName(), 0, mUser.getPassWord());
-            acfg.getSipConfig().getAuthCreds().add( cred );
+            accountConfig.getSipConfig().getAuthCreds().add( cred );
             // Create the account
-            acc.create(acfg);
+            acc.create(accountConfig);
         } catch (Exception e) {
             System.out.println(e.toString());
         }

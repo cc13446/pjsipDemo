@@ -13,7 +13,7 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         android:layout_alignParentTop="true"
-        app:title="MySipPhone" />
+        app:title="Click to register" />
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/DrawerLayout"

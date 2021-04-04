@@ -1,5 +1,6 @@
 package com.chenchen.android.pjsipdemo.Fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,43 +8,34 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.chenchen.android.pjsipdemo.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CallListenFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.Objects;
+
 public class CallListenFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private ImageView mImageView;
+    private ImageButton listenBtn;
+    private ImageButton noListenBtn;
+    private TextView callFromText;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String callInfo;
+
+    private static final String CALLINFO = "call_indo";
 
     public CallListenFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CallListenFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CallListenFragment newInstance(String param1, String param2) {
-        CallListenFragment fragment = new CallListenFragment();
+    public static CallListenFragment newInstance(String callInfo) {
+
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(CALLINFO, callInfo);
+        CallListenFragment fragment = new CallListenFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,16 +43,31 @@ public class CallListenFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        callInfo = getArguments().getString(CALLINFO);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_call_listen, container, false);
+
+        View v = inflater.inflate(R.layout.fragment_call_listen, container, false);
+        mImageView = v.findViewById(R.id.contactImageView);
+        listenBtn = v.findViewById(R.id.listen_button);
+        noListenBtn = v.findViewById(R.id.no_listen_button);
+        callFromText = v.findViewById(R.id.call_from_text);
+
+        callFromText.setText(callInfo);
+
+        listenBtn.setOnClickListener(v1 -> {
+            Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        });
+
+        noListenBtn.setOnClickListener(v1 -> {
+            Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_CANCELED);
+            getActivity().finish();
+        });
+        return v;
     }
 }

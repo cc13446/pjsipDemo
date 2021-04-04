@@ -49,12 +49,6 @@ public class CallFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    public static CallFragment newInstance() {
-        CallFragment fragment = new CallFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,8 +107,6 @@ public class CallFragment extends Fragment implements View.OnClickListener {
             mNumber.setText(s.substring(0, s.length() - 1));
         });
 
-
-
         return v;
     }
 
@@ -157,4 +149,18 @@ public class CallFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         mNumber.setText(mNumber.getText() + ((Button)v).getText().toString());
     }
+
+    @Override
+    public void onDestroy () {
+        super.onDestroy();
+        if(null != ep) {
+            try {
+                ep.libDestroy();
+                ep.delete();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

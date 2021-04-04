@@ -24,6 +24,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.chenchen.android.pjsipdemo.Domain.MyAccount;
 import com.chenchen.android.pjsipdemo.Domain.User;
+import com.chenchen.android.pjsipdemo.Fragments.CallListenFragment;
 import com.chenchen.android.pjsipdemo.R;
 import com.google.android.material.navigation.NavigationView;
 
@@ -41,6 +42,7 @@ public class DemoActivity extends AppCompatActivity implements
     // Activity 返回值
     public static final int REQUEST_CODE_PERMISSION = 0;
     public static final int REQUEST_CODE_USER = 1;
+    public static final int REQUEST_CODE_CALL_LISTEN = 2;
 
     //UI Objects
     private RadioGroup rg_tab_bar;
@@ -61,6 +63,11 @@ public class DemoActivity extends AppCompatActivity implements
     private MyAccount acc;
     private Handler mHandler;
 
+    private static DemoActivity demoActivity;
+
+    public static DemoActivity getInstance(){
+        return demoActivity;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,14 +86,8 @@ public class DemoActivity extends AppCompatActivity implements
         myRequestPermissions();
 
         acc = MyAccount.getInstance(mUser);
-        acc.setHandler(mHandler);
-        acc.setToolbar(mToolbar);
-        acc.register();
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        demoActivity = this;
     }
 
     private void bindViews() {
@@ -124,7 +125,7 @@ public class DemoActivity extends AppCompatActivity implements
         navigation_view.setNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.navigation_item_user:
-                    startActivityForResult(UserActivity.newIntent(this), REQUEST_CODE_USER);
+                    startUserActivity();
                     break;
                 case R.id.navigation_item_setting:
                     Toast.makeText(this, "setting", Toast.LENGTH_SHORT).show();
@@ -140,19 +141,26 @@ public class DemoActivity extends AppCompatActivity implements
         });
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode,  Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(REQUEST_CODE_PERMISSION == requestCode){
             Toast.makeText(this, "缺少权限，无法正常运行", Toast.LENGTH_LONG).show();
         }
-        if(REQUEST_CODE_USER == requestCode){
+        else if(REQUEST_CODE_USER == requestCode){
             if (Activity.RESULT_OK == resultCode) {
                 Toast.makeText(this, "修改用户成功", Toast.LENGTH_SHORT).show();
             }
             else{
                 Toast.makeText(this, "修改用户失败", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if(REQUEST_CODE_CALL_LISTEN == requestCode){
+            if(Activity.RESULT_OK == resultCode){
+                acc.answer();
+            }
+            else if(Activity.RESULT_CANCELED == resultCode){
+                acc.hangUp();
             }
         }
 
@@ -243,5 +251,20 @@ public class DemoActivity extends AppCompatActivity implements
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, REQUEST_CODE_PERMISSION);
         }
+    }
+
+    public void setToolbarState(String state){
+        mToolbar.setTitle(state);
+    }
+    public Handler getHandler(){
+        return mHandler;
+    }
+
+    public void startCallListenActivity(String info){
+        startActivityForResult(CallListenActivity.newIntent(this, info), REQUEST_CODE_CALL_LISTEN);
+    }
+
+    public void startUserActivity(){
+        startActivityForResult(UserActivity.newIntent(this), REQUEST_CODE_USER);
     }
 }
