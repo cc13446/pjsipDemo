@@ -24,7 +24,7 @@ public class MyAccount extends Account {
 
     public static MyAccount acc;
     private User mUser;
-    private int mCallId;
+    private Call mCall;
 
     public void setUser(User user) {
         mUser = user;
@@ -51,34 +51,32 @@ public class MyAccount extends Account {
 
     @Override
     public void onIncomingCall(OnIncomingCallParam prm) {
-        mCallId =  prm.getCallId();
+        mCall =  new MyCall(acc, prm.getCallId());
 
         String info = prm.getRdata().getWholeMsg();
         int i = info.lastIndexOf("Contact:");
         info = info.substring(i, i + 30);
-
         DemoActivity.getInstance().startCallListenActivity(info);
+
 
     }
 
     public void answer(){
-        Call call = new MyCall(acc, mCallId);
         CallOpParam cprm = new CallOpParam();
         cprm.setStatusCode(pjsip_status_code.PJSIP_SC_OK);
 
         try {
-            call.answer(cprm);
+            mCall.answer(cprm);
         }catch (Exception e){
             System.out.println(e.toString());
         }
     }
     public void hangUp(){
-        Call call = new MyCall(acc, mCallId);
         CallOpParam cprm = new CallOpParam();
         cprm.setStatusCode(pjsip_status_code.PJSIP_SC_BUSY_HERE);
 
         try {
-            call.hangup(cprm);
+            mCall.hangup(cprm);
         }catch (Exception e){
             System.out.println(e.toString());
         }
