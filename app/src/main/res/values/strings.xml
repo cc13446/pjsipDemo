@@ -29,4 +29,7 @@
     <string name="_2">2</string>
     <string name="_1">1</string>
     <string name="call_from_who">Call from who</string>
+    <string name="hang_up">挂断</string>
+    <string name="time">time</string>
+    <string name="louder">免提</string>
 </resources>

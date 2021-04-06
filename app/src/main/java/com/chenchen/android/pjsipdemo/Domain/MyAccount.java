@@ -7,6 +7,7 @@ import android.os.Looper;
 import androidx.appcompat.widget.Toolbar;
 
 import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
+import com.chenchen.android.pjsipdemo.Interfaces.OnPJSipRegStateListener;
 
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.AccountConfig;
@@ -34,17 +35,19 @@ public class MyAccount extends Account {
     public static MyAccount getInstance(User user){
         if(null == acc){
             acc = new MyAccount();
-            acc.setUser(user);
         }
+        acc.setUser(user);
         return acc;
     }
 
     @Override
     public void onRegState(OnRegStateParam prm) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        OnPJSipRegStateListener onPJSipRegStateListener = DemoActivity.getInstance();
         if (prm.getCode().swigValue() / 100 == 2) {
-            DemoActivity.getInstance().getHandler().post(() -> DemoActivity.getInstance().setToolbarState("REGISTER_SUCCESS"));
+            handler.post(onPJSipRegStateListener::onSuccess);
         } else {
-            DemoActivity.getInstance().getHandler().post(() -> DemoActivity.getInstance().setToolbarState("REGISTER_FAIL"));
+            handler.post(onPJSipRegStateListener::onError);
         }
 
     }
@@ -52,15 +55,17 @@ public class MyAccount extends Account {
     @Override
     public void onIncomingCall(OnIncomingCallParam prm) {
         mCall =  new MyCall(acc, prm.getCallId());
-
+        // 获取来电信息
         String info = prm.getRdata().getWholeMsg();
         int i = info.lastIndexOf("Contact:");
         info = info.substring(i, i + 30);
+
         DemoActivity.getInstance().startCallListenActivity(info);
 
 
     }
 
+    // 接电话
     public void answer(){
         CallOpParam cprm = new CallOpParam();
         cprm.setStatusCode(pjsip_status_code.PJSIP_SC_OK);

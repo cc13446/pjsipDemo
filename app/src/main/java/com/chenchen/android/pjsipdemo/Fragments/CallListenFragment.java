@@ -25,7 +25,7 @@ public class CallListenFragment extends Fragment {
 
     private String callInfo;
 
-    private static final String CALLINFO = "call_indo";
+    private static final String CALLINFO = "call_info";
 
     public CallListenFragment() {
 

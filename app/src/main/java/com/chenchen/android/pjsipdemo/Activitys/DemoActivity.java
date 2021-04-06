@@ -25,15 +25,18 @@ import androidx.viewpager.widget.ViewPager;
 import com.chenchen.android.pjsipdemo.Domain.MyAccount;
 import com.chenchen.android.pjsipdemo.Domain.User;
 import com.chenchen.android.pjsipdemo.Fragments.CallListenFragment;
+import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
+import com.chenchen.android.pjsipdemo.Interfaces.OnPJSipRegStateListener;
 import com.chenchen.android.pjsipdemo.R;
 import com.google.android.material.navigation.NavigationView;
 
 
 public class DemoActivity extends AppCompatActivity implements
         RadioGroup.OnCheckedChangeListener,
-        ViewPager.OnPageChangeListener {
+        ViewPager.OnPageChangeListener, OnCallStateListener, OnPJSipRegStateListener {
 
 
+    // fragments切换
     public static final int PAGE_CONTACT = 0;
     public static final int PAGE_PHONE = 1;
     public static final int PAGE_MESSAGE = 2;
@@ -43,15 +46,17 @@ public class DemoActivity extends AppCompatActivity implements
     public static final int REQUEST_CODE_PERMISSION = 0;
     public static final int REQUEST_CODE_USER = 1;
     public static final int REQUEST_CODE_CALL_LISTEN = 2;
+    public static final int REQUEST_CODE_CALLING = 3;
 
     //UI Objects
+    private Toolbar mToolbar;
+    private ViewPager vPager;
     private RadioGroup rg_tab_bar;
     private RadioButton rb_contact;
     private RadioButton rb_message;
     private RadioButton rb_phone;
     private RadioButton rb_record;
-    private ViewPager vPager;
-    private Toolbar mToolbar;
+
     private DrawerLayout drawerLayout;
     private NavigationView navigation_view;
     private ImageView headView;
@@ -77,7 +82,7 @@ public class DemoActivity extends AppCompatActivity implements
         mUser = User.getInstance(this);
         mHandler = new Handler();
 
-
+        // 适配器
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         bindViews();
         rb_contact.setChecked(true);
@@ -144,9 +149,11 @@ public class DemoActivity extends AppCompatActivity implements
     @Override
     public void onActivityResult(int requestCode, int resultCode,  Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // 申请权限
         if(REQUEST_CODE_PERMISSION == requestCode){
             Toast.makeText(this, "缺少权限，无法正常运行", Toast.LENGTH_LONG).show();
         }
+        // 用户Activity
         else if(REQUEST_CODE_USER == requestCode){
             if (Activity.RESULT_OK == resultCode) {
                 Toast.makeText(this, "修改用户成功", Toast.LENGTH_SHORT).show();
@@ -155,11 +162,17 @@ public class DemoActivity extends AppCompatActivity implements
                 Toast.makeText(this, "修改用户失败", Toast.LENGTH_SHORT).show();
             }
         }
+        // 来电话
         else if(REQUEST_CODE_CALL_LISTEN == requestCode){
             if(Activity.RESULT_OK == resultCode){
                 acc.answer();
             }
             else if(Activity.RESULT_CANCELED == resultCode){
+                acc.hangUp();
+            }
+        }
+        else if(REQUEST_CODE_CALLING == requestCode){
+            if(Activity.RESULT_CANCELED == resultCode){
                 acc.hangUp();
             }
         }
@@ -253,18 +266,71 @@ public class DemoActivity extends AppCompatActivity implements
         }
     }
 
-    public void setToolbarState(String state){
+    private void setToolbarState(String state){
         mToolbar.setTitle(state);
     }
     public Handler getHandler(){
         return mHandler;
     }
 
+    // 启动来电话Activity
     public void startCallListenActivity(String info){
         startActivityForResult(CallListenActivity.newIntent(this, info), REQUEST_CODE_CALL_LISTEN);
     }
-
+    // 启动user activity
     public void startUserActivity(){
         startActivityForResult(UserActivity.newIntent(this), REQUEST_CODE_USER);
+    }
+
+    @Override
+    public void callIn(String contactName) {
+        Intent intent = CallingActivity.newIntent(this,"Call From " + contactName);
+        startActivityForResult(intent, REQUEST_CODE_CALLING);
+    }
+
+    @Override
+    public void callOut(String contactName) {
+        Intent intent = CallingActivity.newIntent(this,"Call To " + contactName);
+        startActivityForResult(intent, REQUEST_CODE_CALLING);
+    }
+
+    @Override
+    public void calling() {
+
+    }
+
+    @Override
+    public void early() {
+
+    }
+
+    @Override
+    public void connecting() {
+
+    }
+
+    @Override
+    public void confirmed() {
+
+    }
+
+    @Override
+    public void disconnected() {
+
+    }
+
+    @Override
+    public void error() {
+
+    }
+
+    @Override
+    public void onSuccess() {
+        setToolbarState("REGISTER_SUCCESS");
+    }
+
+    @Override
+    public void onError() {
+        setToolbarState("REGISTER_FAIL");
     }
 }

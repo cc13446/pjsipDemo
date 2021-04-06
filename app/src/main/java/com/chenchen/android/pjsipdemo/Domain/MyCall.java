@@ -1,5 +1,8 @@
 package com.chenchen.android.pjsipdemo.Domain;
 
+import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
+import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
+
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.AudDevManager;
 import org.pjsip.pjsua2.AudioMedia;
@@ -11,16 +14,50 @@ import org.pjsip.pjsua2.Media;
 import org.pjsip.pjsua2.OnCallMediaStateParam;
 import org.pjsip.pjsua2.OnCallStateParam;
 import org.pjsip.pjsua2.pjmedia_type;
+import org.pjsip.pjsua2.pjsip_inv_state;
+import org.pjsip.pjsua2.pjsip_role_e;
 
 public class MyCall extends Call {
+    private CallInfo info;
+    private pjsip_inv_state state;
+    private pjsip_role_e role;
 
     public MyCall(Account acc, int call_id) {
         super(acc, call_id);
     }
 
+
     @Override
     public void onCallState(OnCallStateParam prm) {
         super.onCallState(prm);
+        OnCallStateListener onCallStateListener = DemoActivity.getInstance();
+
+        try {
+            info = getInfo();
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
+        state = info.getState();
+        role = info.getRole();//这个参数就可以判断，这个通话，你是呼出还是呼入
+        if (state == pjsip_inv_state.PJSIP_INV_STATE_CALLING) {
+            onCallStateListener.calling();
+        } else if (state == pjsip_inv_state.PJSIP_INV_STATE_EARLY) {
+            onCallStateListener.early();
+        } else if (state == pjsip_inv_state.PJSIP_INV_STATE_CONNECTING) {
+            onCallStateListener.connecting();
+            // 电话呼出
+            if (role == pjsip_role_e.PJSIP_ROLE_UAC) {
+                onCallStateListener.callOut(info.getRemoteContact());
+            }
+            //电话呼入
+            else if (role == pjsip_role_e.PJSIP_ROLE_UAS) {
+                onCallStateListener.callIn(info.getRemoteContact());
+            }
+        } else if (state == pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED) {
+            onCallStateListener.confirmed();
+        } else if (state == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED) {
+            onCallStateListener.disconnected();
+        }
     }
 
     @Override
