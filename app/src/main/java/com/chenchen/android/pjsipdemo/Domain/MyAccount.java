@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
 import com.chenchen.android.pjsipdemo.Interfaces.OnPJSipRegStateListener;
+import com.chenchen.android.pjsipdemo.MyActivityManager;
 
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.AccountConfig;
@@ -43,7 +44,7 @@ public class MyAccount extends Account {
     @Override
     public void onRegState(OnRegStateParam prm) {
         Handler handler = new Handler(Looper.getMainLooper());
-        OnPJSipRegStateListener onPJSipRegStateListener = DemoActivity.getInstance();
+        OnPJSipRegStateListener onPJSipRegStateListener = (OnPJSipRegStateListener)MyActivityManager.getManager().findActivity(DemoActivity.class);
         if (prm.getCode().swigValue() / 100 == 2) {
             handler.post(onPJSipRegStateListener::onSuccess);
         } else {
@@ -54,14 +55,16 @@ public class MyAccount extends Account {
 
     @Override
     public void onIncomingCall(OnIncomingCallParam prm) {
+        if(null != mCall){
+            return;
+        }
         mCall =  new MyCall(acc, prm.getCallId());
         // 获取来电信息
         String info = prm.getRdata().getWholeMsg();
         int i = info.lastIndexOf("Contact:");
         info = info.substring(i, i + 30);
 
-        DemoActivity.getInstance().startCallListenActivity(info);
-
+        ((DemoActivity)MyActivityManager.getManager().findActivity(DemoActivity.class)).startCallListenActivity(info);
 
     }
 
@@ -78,10 +81,11 @@ public class MyAccount extends Account {
     }
     public void hangUp(){
         CallOpParam cprm = new CallOpParam();
-        cprm.setStatusCode(pjsip_status_code.PJSIP_SC_BUSY_HERE);
+        cprm.setStatusCode(pjsip_status_code.PJSIP_SC_DECLINE);
 
         try {
             mCall.hangup(cprm);
+            mCall = null;
         }catch (Exception e){
             System.out.println(e.toString());
         }

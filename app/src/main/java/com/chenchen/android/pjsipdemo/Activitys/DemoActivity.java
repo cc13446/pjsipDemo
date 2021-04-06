@@ -6,14 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -24,7 +22,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.chenchen.android.pjsipdemo.Domain.MyAccount;
 import com.chenchen.android.pjsipdemo.Domain.User;
-import com.chenchen.android.pjsipdemo.Fragments.CallListenFragment;
+import com.chenchen.android.pjsipdemo.MyActivityManager;
 import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
 import com.chenchen.android.pjsipdemo.Interfaces.OnPJSipRegStateListener;
 import com.chenchen.android.pjsipdemo.R;
@@ -66,13 +64,6 @@ public class DemoActivity extends AppCompatActivity implements
     // domain
     private User mUser;
     private MyAccount acc;
-    private Handler mHandler;
-
-    private static DemoActivity demoActivity;
-
-    public static DemoActivity getInstance(){
-        return demoActivity;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +71,6 @@ public class DemoActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_fragment_bottom_nv);
         // 获取单例
         mUser = User.getInstance(this);
-        mHandler = new Handler();
 
         // 适配器
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
@@ -91,8 +81,7 @@ public class DemoActivity extends AppCompatActivity implements
         myRequestPermissions();
 
         acc = MyAccount.getInstance(mUser);
-
-        demoActivity = this;
+        MyActivityManager.getManager().addActivity(this);
     }
 
     private void bindViews() {
@@ -269,9 +258,6 @@ public class DemoActivity extends AppCompatActivity implements
     private void setToolbarState(String state){
         mToolbar.setTitle(state);
     }
-    public Handler getHandler(){
-        return mHandler;
-    }
 
     // 启动来电话Activity
     public void startCallListenActivity(String info){
@@ -316,7 +302,8 @@ public class DemoActivity extends AppCompatActivity implements
 
     @Override
     public void disconnected() {
-
+        Log.d("demo", "disconnected: ");
+        MyActivityManager.getManager().finishActivity(CallingActivity.class);
     }
 
     @Override

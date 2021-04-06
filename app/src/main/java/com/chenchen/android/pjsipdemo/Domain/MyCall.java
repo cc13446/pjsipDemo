@@ -2,6 +2,7 @@ package com.chenchen.android.pjsipdemo.Domain;
 
 import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
 import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
+import com.chenchen.android.pjsipdemo.MyActivityManager;
 
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.AudDevManager;
@@ -30,7 +31,7 @@ public class MyCall extends Call {
     @Override
     public void onCallState(OnCallStateParam prm) {
         super.onCallState(prm);
-        OnCallStateListener onCallStateListener = DemoActivity.getInstance();
+        OnCallStateListener onCallStateListener = (OnCallStateListener) MyActivityManager.getManager().findActivity(DemoActivity.class);
 
         try {
             info = getInfo();
