@@ -19,6 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.chenchen.android.pjsipdemo.Domain.SipAccount;
+import com.chenchen.android.pjsipdemo.Domain.SipCall;
 import com.chenchen.android.pjsipdemo.Domain.User;
 import com.chenchen.android.pjsipdemo.MyActivityManager;
 import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
@@ -152,21 +153,31 @@ public class DemoActivity extends AppCompatActivity implements
         }
         // 来电话
         else if(REQUEST_CODE_CALLIN == requestCode){
+            SipCall sipCall = acc.getCall();
+
             if(Activity.RESULT_OK == resultCode){
-                acc.answer();
+                if(null != sipCall) sipCall.acceptIncomingCall();
             }
             else if(Activity.RESULT_FIRST_USER == resultCode){
-                acc.hangUp();
+                if(null != sipCall && sipCall.isActive()){
+                    sipCall.hangUp();
+                }
             }
         }
         else if(REQUEST_CODE_CALLING == requestCode){
+            SipCall sipCall = acc.getCall();
             if(Activity.RESULT_FIRST_USER == resultCode){
-                acc.hangUp();
+                if(null != sipCall && sipCall.isActive()){
+                    sipCall.hangUp();
+                }
             }
         }
         else if(REQUEST_CODE_CALLOUT == requestCode){
+            SipCall sipCall = acc.getCall();
             if(Activity.RESULT_FIRST_USER == resultCode){
-                acc.hangUp();
+                if(null != sipCall && sipCall.isActive()){
+                    sipCall.hangUp();
+                }
             }
         }
 
@@ -314,6 +325,8 @@ public class DemoActivity extends AppCompatActivity implements
 
     @Override
     public void disconnected() {
+        MyActivityManager.getManager().finishActivity(CallOutActivity.class);
+        MyActivityManager.getManager().finishActivity(CallInActivity.class);
         MyActivityManager.getManager().finishActivity(CallingAudioActivity.class);
     }
 

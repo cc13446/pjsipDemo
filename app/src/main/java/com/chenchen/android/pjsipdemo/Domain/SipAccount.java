@@ -25,7 +25,6 @@ public class SipAccount extends Account {
 
     private static final String LOG_TAG = SipAccount.class.getSimpleName();
 
-    private HashMap<Integer, SipCall> activeCalls = new HashMap<>();
 
     public static SipAccount acc;
     private User mUser;
@@ -33,6 +32,14 @@ public class SipAccount extends Account {
 
     public SipAccount() {
 
+    }
+
+    public SipCall getCall() {
+        return mCall;
+    }
+
+    public void setCall(SipCall call) {
+        mCall = call;
     }
 
     public void setUser(User user) {
@@ -62,7 +69,7 @@ public class SipAccount extends Account {
 
     @Override
     public void onIncomingCall(OnIncomingCallParam prm) {
-        if(null != mCall){
+        if(null != mCall && mCall.isActive()){
             return;
         }
         mCall =  new SipCall(acc, prm.getCallId());
@@ -73,16 +80,6 @@ public class SipAccount extends Account {
 
         ((DemoActivity)MyActivityManager.getManager().findActivity(DemoActivity.class)).startCallListenActivity(info);
 
-    }
-
-    // 接电话
-    public void answer(){
-        mCall.acceptIncomingCall();
-    }
-    public void hangUp(){
-        if(null != mCall && mCall.isActive()){
-            mCall.hangUp();
-        }
     }
 
     public void register() {

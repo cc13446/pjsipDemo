@@ -111,11 +111,9 @@ public class CallFragment extends Fragment{
         if(null == acc) {
             return;
         }
-        mSipCall = new SipCall(acc);
+        mSipCall = new SipCall(acc, -1);
+        acc.setCall(mSipCall);
         CallOpParam prm = new CallOpParam();
-        CallSetting opt = prm.getOpt();
-        opt.setAudioCount(1);
-        opt.setVideoCount(0);
 
         //这里注意，格式  sip: 110@192.168.1.163
         String dst_uri = "sip:" + mNumber.getText().toString() + "@" + mUser.getUrl();

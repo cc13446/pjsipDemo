@@ -33,23 +33,11 @@ public class SipCall extends Call {
 
     private boolean videoCall = false;
 
-    /**
-     * Incoming call constructor.
-     * @param acc the account which own this call
-     * @param callId the id of this call
-     */
 
     public SipCall(SipAccount acc, int callId) {
         super(acc, callId);
     }
 
-    /**
-     * Outgoing call constructor.
-     * @param account account which owns this call
-     */
-    public SipCall(SipAccount account) {
-        super(account);
-    }
 
 
     @Override
@@ -143,10 +131,6 @@ public class SipCall extends Call {
     @Override
     public void makeCall(String dst_uri, CallOpParam prm) throws java.lang.Exception {
         setMediaParams(prm);
-        if (!videoCall) {
-            CallSetting callSetting = prm.getOpt();
-            callSetting.setFlag(pjsua_call_flag.PJSUA_CALL_INCLUDE_DISABLED_MEDIA.swigValue());
-        }
         super.makeCall(dst_uri, prm);
     }
 
