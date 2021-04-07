@@ -71,7 +71,9 @@ public class SipAccount extends Account {
         mCall.acceptIncomingCall();
     }
     public void hangUp(){
-        mCall.hangUp();
+        if(null != mCall && mCall.isActive()){
+            mCall.hangUp();
+        }
     }
 
     public void register() {

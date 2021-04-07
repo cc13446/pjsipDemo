@@ -89,7 +89,6 @@ public class SipCall extends Call {
             callID = info.getId();
             state = info.getState();
             role = info.getRole();//这个参数就可以判断，这个通话，你是呼出还是呼入
-            callStatus = info.getLastStatusCode();
         }catch (Exception ex){
             Logger.error(LOG_TAG, "Error while getting call status", ex);
         }

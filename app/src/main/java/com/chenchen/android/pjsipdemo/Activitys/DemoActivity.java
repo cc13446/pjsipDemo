@@ -258,6 +258,8 @@ public class DemoActivity extends AppCompatActivity implements
         mToolbar.setTitle(state);
     }
 
+    // 启动Activiy
+
     // 启动来电话Activity
     public void startCallListenActivity(String info){
         startActivityForResult(CallListenActivity.newIntent(this, info), REQUEST_CODE_CALL_LISTEN);
@@ -267,6 +269,7 @@ public class DemoActivity extends AppCompatActivity implements
         startActivityForResult(UserActivity.newIntent(this), REQUEST_CODE_USER);
     }
 
+    // OnCallstateListener
     @Override
     public void callIn(String contactName) {
         Intent intent = CallingActivity.newIntent(this,"Call From " + contactName);
@@ -301,7 +304,6 @@ public class DemoActivity extends AppCompatActivity implements
 
     @Override
     public void disconnected() {
-        Log.d("demo", "disconnected: ");
         MyActivityManager.getManager().finishActivity(CallingActivity.class);
     }
 
@@ -310,6 +312,7 @@ public class DemoActivity extends AppCompatActivity implements
 
     }
 
+    //OnPjSipRegStateListener
     @Override
     public void onSuccess() {
         setToolbarState("REGISTER_SUCCESS");

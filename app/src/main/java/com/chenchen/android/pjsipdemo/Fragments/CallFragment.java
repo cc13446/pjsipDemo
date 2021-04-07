@@ -13,13 +13,17 @@ import androidx.fragment.app.Fragment;
 
 import com.chenchen.android.pjsipdemo.Domain.SipAccount;
 import com.chenchen.android.pjsipdemo.Domain.SipCall;
+import com.chenchen.android.pjsipdemo.Domain.SipEndPoint;
+import com.chenchen.android.pjsipdemo.Logger;
 import com.chenchen.android.pjsipdemo.R;
 import com.chenchen.android.pjsipdemo.Domain.User;
 
 import org.pjsip.pjsua2.*;
 
 
-public class CallFragment extends Fragment implements View.OnClickListener {
+public class CallFragment extends Fragment{
+
+    private static final String LOG_TAG = SipAccount.class.getSimpleName();
 
     private TextView mNumber;
     private ImageButton callButton;
@@ -38,10 +42,8 @@ public class CallFragment extends Fragment implements View.OnClickListener {
     private ImageButton btn_backSpace;
 
 
-    private Endpoint ep;
     private SipCall mSipCall;
     private SipAccount acc;
-
 
     User mUser;
 
@@ -55,12 +57,6 @@ public class CallFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         mUser = User.getInstance(getActivity());
         acc = SipAccount.getInstance(mUser);
-
-        try {
-            init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -69,37 +65,39 @@ public class CallFragment extends Fragment implements View.OnClickListener {
 
         View v = inflater.inflate(R.layout.fragment_call, container, false);
 
-        mNumber = (TextView)v.findViewById(R.id.tel_num);
-        callButton = (ImageButton)v.findViewById(R.id.phone_call_button);
+        mNumber = v.findViewById(R.id.tel_num);
+        callButton = v.findViewById(R.id.phone_call_button);
         callButton.setOnClickListener(v1 -> {
             String ip = mNumber.getText().toString();
             call();
-            Toast.makeText(getContext(), "call " + ip, Toast.LENGTH_SHORT).show();
+            Logger.error(LOG_TAG, "CALL " + ip);
         });
+
+        View.OnClickListener onClickListener = v1 -> mNumber.setText(mNumber.getText() + ((Button) v1).getText().toString());
         btn_0 = v.findViewById(R.id.button0);
-        btn_0.setOnClickListener(this);
+        btn_0.setOnClickListener(onClickListener);
         btn_1 = v.findViewById(R.id.button1);
-        btn_1.setOnClickListener(this);
+        btn_1.setOnClickListener(onClickListener);
         btn_2 = v.findViewById(R.id.button2);
-        btn_2.setOnClickListener(this);
+        btn_2.setOnClickListener(onClickListener);
         btn_3 = v.findViewById(R.id.button3);
-        btn_3.setOnClickListener(this);
+        btn_3.setOnClickListener(onClickListener);
         btn_4 = v.findViewById(R.id.button4);
-        btn_4.setOnClickListener(this);
+        btn_4.setOnClickListener(onClickListener);
         btn_5 = v.findViewById(R.id.button5);
-        btn_5.setOnClickListener(this);
+        btn_5.setOnClickListener(onClickListener);
         btn_6 = v.findViewById(R.id.button6);
-        btn_6.setOnClickListener(this);
+        btn_6.setOnClickListener(onClickListener);
         btn_7 = v.findViewById(R.id.button7);
-        btn_7.setOnClickListener(this);
+        btn_7.setOnClickListener(onClickListener);
         btn_8 = v.findViewById(R.id.button8);
-        btn_8.setOnClickListener(this);
+        btn_8.setOnClickListener(onClickListener);
         btn_9 = v.findViewById(R.id.button9);
-        btn_9.setOnClickListener(this);
+        btn_9.setOnClickListener(onClickListener);
         btn_J = v.findViewById(R.id.buttonJ);
-        btn_J.setOnClickListener(this);
+        btn_J.setOnClickListener(onClickListener);
         btn_X = v.findViewById(R.id.buttonX);
-        btn_X.setOnClickListener(this);
+        btn_X.setOnClickListener(onClickListener);
         btn_backSpace = v.findViewById(R.id.btn_backspace);
         btn_backSpace.setOnClickListener(v1 -> {
             String s = mNumber.getText().toString();
@@ -110,27 +108,11 @@ public class CallFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
-    private void init() throws Exception {
-        // Create endpoint
-        if(null == ep) ep = new Endpoint();
-
-        ep.libCreate();
-        // Initialize endpoint
-        EpConfig epConfig = new EpConfig();
-        ep.libInit( epConfig );
-        // Create SIP transport. Error handling sample is shown
-        TransportConfig sipTpConfig = new TransportConfig();
-        sipTpConfig.setPort(5060);
-        ep.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_UDP, sipTpConfig);
-        // Start the library
-        ep.libStart();
-    }
-
     private void call(){
         if(null == acc) {
             return;
         }
-        mSipCall = new SipCall(acc, -1);
+        mSipCall = new SipCall(acc);
         CallOpParam prm = new CallOpParam();
         CallSetting opt = prm.getOpt();
         opt.setAudioCount(1);
@@ -142,24 +124,6 @@ public class CallFragment extends Fragment implements View.OnClickListener {
             mSipCall.makeCall(dst_uri, prm);
         } catch (Exception e) {
             mSipCall.delete();
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        mNumber.setText(mNumber.getText() + ((Button)v).getText().toString());
-    }
-
-    @Override
-    public void onDestroy () {
-        super.onDestroy();
-        if(null != ep) {
-            try {
-                ep.libDestroy();
-                ep.delete();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
