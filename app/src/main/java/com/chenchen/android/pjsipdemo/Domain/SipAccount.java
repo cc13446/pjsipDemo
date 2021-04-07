@@ -1,10 +1,7 @@
 package com.chenchen.android.pjsipdemo.Domain;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-
-import androidx.appcompat.widget.Toolbar;
 
 import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
 import com.chenchen.android.pjsipdemo.Interfaces.OnPJSipRegStateListener;
@@ -13,29 +10,30 @@ import com.chenchen.android.pjsipdemo.MyActivityManager;
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.AccountConfig;
 import org.pjsip.pjsua2.AuthCredInfo;
-import org.pjsip.pjsua2.Call;
-import org.pjsip.pjsua2.CallOpParam;
 import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnRegStateParam;
-import org.pjsip.pjsua2.pjsip_status_code;
 
-import java.util.Date;
+import java.util.HashMap;
 
 
-public class MyAccount extends Account {
+public class SipAccount extends Account {
 
-    public static MyAccount acc;
+    private static final String LOG_TAG = SipAccount.class.getSimpleName();
+
+    private HashMap<Integer, SipCall> activeCalls = new HashMap<>();
+
+    public static SipAccount acc;
     private User mUser;
-    private Call mCall;
+    private SipCall mCall;
 
     public void setUser(User user) {
         mUser = user;
     }
 
 
-    public static MyAccount getInstance(User user){
+    public static SipAccount getInstance(User user){
         if(null == acc){
-            acc = new MyAccount();
+            acc = new SipAccount();
         }
         acc.setUser(user);
         return acc;
@@ -58,7 +56,7 @@ public class MyAccount extends Account {
         if(null != mCall){
             return;
         }
-        mCall =  new MyCall(acc, prm.getCallId());
+        mCall =  new SipCall(acc, prm.getCallId());
         // 获取来电信息
         String info = prm.getRdata().getWholeMsg();
         int i = info.lastIndexOf("Contact:");
@@ -70,25 +68,10 @@ public class MyAccount extends Account {
 
     // 接电话
     public void answer(){
-        CallOpParam cprm = new CallOpParam();
-        cprm.setStatusCode(pjsip_status_code.PJSIP_SC_OK);
-
-        try {
-            mCall.answer(cprm);
-        }catch (Exception e){
-            System.out.println(e.toString());
-        }
+        mCall.acceptIncomingCall();
     }
     public void hangUp(){
-        CallOpParam cprm = new CallOpParam();
-        cprm.setStatusCode(pjsip_status_code.PJSIP_SC_DECLINE);
-
-        try {
-            mCall.hangup(cprm);
-            mCall = null;
-        }catch (Exception e){
-            System.out.println(e.toString());
-        }
+        mCall.hangUp();
     }
 
     public void register() {

@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.chenchen.android.pjsipdemo.Domain.MyAccount;
-import com.chenchen.android.pjsipdemo.Domain.MyCall;
+import com.chenchen.android.pjsipdemo.Domain.SipAccount;
+import com.chenchen.android.pjsipdemo.Domain.SipCall;
 import com.chenchen.android.pjsipdemo.R;
 import com.chenchen.android.pjsipdemo.Domain.User;
 
@@ -39,8 +39,8 @@ public class CallFragment extends Fragment implements View.OnClickListener {
 
 
     private Endpoint ep;
-    private MyCall myCall;
-    private MyAccount acc;
+    private SipCall mSipCall;
+    private SipAccount acc;
 
 
     User mUser;
@@ -54,7 +54,7 @@ public class CallFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUser = User.getInstance(getActivity());
-        acc = MyAccount.getInstance(mUser);
+        acc = SipAccount.getInstance(mUser);
 
         try {
             init();
@@ -130,7 +130,7 @@ public class CallFragment extends Fragment implements View.OnClickListener {
         if(null == acc) {
             return;
         }
-        myCall = new MyCall(acc, -1);
+        mSipCall = new SipCall(acc, -1);
         CallOpParam prm = new CallOpParam();
         CallSetting opt = prm.getOpt();
         opt.setAudioCount(1);
@@ -139,9 +139,9 @@ public class CallFragment extends Fragment implements View.OnClickListener {
         //这里注意，格式  sip: 110@192.168.1.163
         String dst_uri = "sip:" + mNumber.getText().toString() + "@" + mUser.getUrl();
         try {
-            myCall.makeCall(dst_uri, prm);
+            mSipCall.makeCall(dst_uri, prm);
         } catch (Exception e) {
-            myCall.delete();
+            mSipCall.delete();
         }
     }
 

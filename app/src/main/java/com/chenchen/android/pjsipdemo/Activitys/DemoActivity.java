@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -20,7 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
-import com.chenchen.android.pjsipdemo.Domain.MyAccount;
+import com.chenchen.android.pjsipdemo.Domain.SipAccount;
 import com.chenchen.android.pjsipdemo.Domain.User;
 import com.chenchen.android.pjsipdemo.MyActivityManager;
 import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
@@ -63,7 +62,7 @@ public class DemoActivity extends AppCompatActivity implements
 
     // domain
     private User mUser;
-    private MyAccount acc;
+    private SipAccount acc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +79,7 @@ public class DemoActivity extends AppCompatActivity implements
         // 请求权限
         myRequestPermissions();
 
-        acc = MyAccount.getInstance(mUser);
+        acc = SipAccount.getInstance(mUser);
         MyActivityManager.getManager().addActivity(this);
     }
 
