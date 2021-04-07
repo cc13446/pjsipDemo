@@ -11,7 +11,7 @@ import com.chenchen.android.pjsipdemo.Fragments.CallingFragment;
 public class CallingActivity extends SimpleFragmentActivity{
 
 
-
+    // 通话页面显示联系人信息
     private static final String EXTRA_CONTACT_NAME = "com.chenchen.android.pjsipdemo.contact_name";
 
     @Override

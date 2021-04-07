@@ -10,7 +10,7 @@ import com.chenchen.android.pjsipdemo.Fragments.CallListenFragment;
 public class CallListenActivity extends SimpleFragmentActivity{
 
 
-    // 来电显示
+    // 来电显示联系人信息
     private static final String EXTRA_CALL_INFO = "com.chenchen.android.pjsipdemo.call_info";
 
     @Override

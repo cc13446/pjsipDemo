@@ -5,15 +5,20 @@ import android.os.Looper;
 
 import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
 import com.chenchen.android.pjsipdemo.Interfaces.OnPJSipRegStateListener;
+import com.chenchen.android.pjsipdemo.Logger;
 import com.chenchen.android.pjsipdemo.MyActivityManager;
 
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.AccountConfig;
 import org.pjsip.pjsua2.AuthCredInfo;
+import org.pjsip.pjsua2.CallInfo;
+import org.pjsip.pjsua2.CallOpParam;
 import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnRegStateParam;
+import org.pjsip.pjsua2.pjsip_status_code;
 
 import java.util.HashMap;
+import java.util.Set;
 
 
 public class SipAccount extends Account {
@@ -25,6 +30,10 @@ public class SipAccount extends Account {
     public static SipAccount acc;
     private User mUser;
     private SipCall mCall;
+
+    public SipAccount() {
+
+    }
 
     public void setUser(User user) {
         mUser = user;

@@ -1,5 +1,7 @@
 package com.chenchen.android.pjsipdemo.Domain;
 
+import android.view.Surface;
+
 import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
 import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
 import com.chenchen.android.pjsipdemo.Logger;
@@ -9,15 +11,25 @@ import org.pjsip.pjsua2.AudDevManager;
 import org.pjsip.pjsua2.AudioMedia;
 import org.pjsip.pjsua2.Call;
 import org.pjsip.pjsua2.CallInfo;
+import org.pjsip.pjsua2.CallMediaInfo;
 import org.pjsip.pjsua2.CallMediaInfoVector;
 import org.pjsip.pjsua2.CallOpParam;
 import org.pjsip.pjsua2.CallSetting;
+import org.pjsip.pjsua2.CallVidSetStreamParam;
 import org.pjsip.pjsua2.Endpoint;
+import org.pjsip.pjsua2.Media;
+import org.pjsip.pjsua2.OnCallMediaEventParam;
 import org.pjsip.pjsua2.OnCallMediaStateParam;
 import org.pjsip.pjsua2.OnCallStateParam;
+import org.pjsip.pjsua2.RtcpStreamStat;
+import org.pjsip.pjsua2.StreamInfo;
+import org.pjsip.pjsua2.StreamStat;
 import org.pjsip.pjsua2.ToneGenerator;
 import org.pjsip.pjsua2.VideoPreview;
+import org.pjsip.pjsua2.VideoPreviewOpParam;
 import org.pjsip.pjsua2.VideoWindow;
+import org.pjsip.pjsua2.VideoWindowHandle;
+import org.pjsip.pjsua2.pjmedia_event_type;
 import org.pjsip.pjsua2.pjmedia_type;
 import org.pjsip.pjsua2.pjsip_inv_state;
 import org.pjsip.pjsua2.pjsip_role_e;
