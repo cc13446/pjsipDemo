@@ -2,13 +2,13 @@ package com.chenchen.android.pjsipdemo.Interfaces;
 
 public interface OnCallStateListener {
 
-    void callIn(String contactName);
-    void callOut(String contactName);
+    void callingIn(String contactName);
+    void callingOut(String contactName);
 
     /***
      * 正在呼出
      */
-    void calling();
+    void callOut(String contactName);
 
     /***
      * 对象响铃

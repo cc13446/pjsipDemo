@@ -14,11 +14,9 @@ import android.widget.Toast;
 
 import com.chenchen.android.pjsipdemo.R;
 
-import org.pjsip.pjsua2.Call;
-
 import java.util.Objects;
 
-public class CallingFragment extends Fragment {
+public class CallingAudioFragment extends Fragment {
 
     private TextView contactNameText;
     private TextView timeText;
@@ -29,14 +27,14 @@ public class CallingFragment extends Fragment {
 
     private static final String CONTACTNAME = "conatct_name";
 
-    public CallingFragment() {
+    public CallingAudioFragment() {
 
     }
-    public static CallingFragment newInstance(String callInfo) {
+    public static CallingAudioFragment newInstance(String callInfo) {
 
         Bundle args = new Bundle();
         args.putString(CONTACTNAME, callInfo);
-        CallingFragment fragment = new CallingFragment();
+        CallingAudioFragment fragment = new CallingAudioFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,7 +48,7 @@ public class CallingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_calling, container, false);
+        View v = inflater.inflate(R.layout.fragment_calling_audio, container, false);
         contactNameText = v.findViewById(R.id.contact_name_text);
         contactNameText.setText(mContactName);
         timeText = v.findViewById(R.id.time_text);
@@ -58,7 +56,7 @@ public class CallingFragment extends Fragment {
         louderBtn = v.findViewById(R.id.louder_btn);
 
         hangUpBtn.setOnClickListener(v1 -> {
-            Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_CANCELED);
+            Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_FIRST_USER);
             getActivity().finish();
         });
 

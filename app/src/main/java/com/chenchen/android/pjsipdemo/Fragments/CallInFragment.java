@@ -16,7 +16,7 @@ import com.chenchen.android.pjsipdemo.R;
 
 import java.util.Objects;
 
-public class CallListenFragment extends Fragment {
+public class CallInFragment extends Fragment {
 
     private ImageView mImageView;
     private ImageButton listenBtn;
@@ -27,15 +27,15 @@ public class CallListenFragment extends Fragment {
 
     private static final String CALLINFO = "call_info";
 
-    public CallListenFragment() {
+    public CallInFragment() {
 
     }
 
-    public static CallListenFragment newInstance(String callInfo) {
+    public static CallInFragment newInstance(String callInfo) {
 
         Bundle args = new Bundle();
         args.putString(CALLINFO, callInfo);
-        CallListenFragment fragment = new CallListenFragment();
+        CallInFragment fragment = new CallInFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,11 +51,11 @@ public class CallListenFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_call_listen, container, false);
+        View v = inflater.inflate(R.layout.fragment_call_in, container, false);
         mImageView = v.findViewById(R.id.contactImageView);
         listenBtn = v.findViewById(R.id.listen_button);
         noListenBtn = v.findViewById(R.id.no_listen_button);
-        callFromText = v.findViewById(R.id.call_from_text);
+        callFromText = v.findViewById(R.id.call_to_text);
 
         callFromText.setText(callInfo);
 
@@ -65,7 +65,7 @@ public class CallListenFragment extends Fragment {
         });
 
         noListenBtn.setOnClickListener(v1 -> {
-            Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_CANCELED);
+            Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_FIRST_USER);
             getActivity().finish();
         });
         return v;

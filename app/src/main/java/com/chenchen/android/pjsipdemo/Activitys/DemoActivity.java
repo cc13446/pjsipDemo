@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -42,8 +41,9 @@ public class DemoActivity extends AppCompatActivity implements
     // Activity 返回值
     public static final int REQUEST_CODE_PERMISSION = 0;
     public static final int REQUEST_CODE_USER = 1;
-    public static final int REQUEST_CODE_CALL_LISTEN = 2;
-    public static final int REQUEST_CODE_CALLING = 3;
+    public static final int REQUEST_CODE_CALLING = 2;
+    public static final int REQUEST_CODE_CALLIN = 3;
+    public static final int REQUEST_CODE_CALLOUT = 4;
 
     //UI Objects
     private Toolbar mToolbar;
@@ -151,16 +151,21 @@ public class DemoActivity extends AppCompatActivity implements
             }
         }
         // 来电话
-        else if(REQUEST_CODE_CALL_LISTEN == requestCode){
+        else if(REQUEST_CODE_CALLIN == requestCode){
             if(Activity.RESULT_OK == resultCode){
                 acc.answer();
             }
-            else if(Activity.RESULT_CANCELED == resultCode){
+            else if(Activity.RESULT_FIRST_USER == resultCode){
                 acc.hangUp();
             }
         }
         else if(REQUEST_CODE_CALLING == requestCode){
-            if(Activity.RESULT_CANCELED == resultCode){
+            if(Activity.RESULT_FIRST_USER == resultCode){
+                acc.hangUp();
+            }
+        }
+        else if(REQUEST_CODE_CALLOUT == requestCode){
+            if(Activity.RESULT_FIRST_USER == resultCode){
                 acc.hangUp();
             }
         }
@@ -262,7 +267,7 @@ public class DemoActivity extends AppCompatActivity implements
 
     // 启动来电话Activity
     public void startCallListenActivity(String info){
-        startActivityForResult(CallListenActivity.newIntent(this, info), REQUEST_CODE_CALL_LISTEN);
+        startActivityForResult(CallInActivity.newIntent(this, info), REQUEST_CODE_CALLIN);
     }
     // 启动user activity
     public void startUserActivity(){
@@ -271,20 +276,25 @@ public class DemoActivity extends AppCompatActivity implements
 
     // OnCallstateListener
     @Override
-    public void callIn(String contactName) {
-        Intent intent = CallingActivity.newIntent(this,"Call From " + contactName);
+    public void callingIn(String contactName) {
+        Intent intent = CallingAudioActivity.newIntent(this,"Call From " + contactName);
+        MyActivityManager.getManager().finishActivity(CallOutActivity.class);
+        MyActivityManager.getManager().finishActivity(CallInActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_CALLING);
+    }
+
+    @Override
+    public void callingOut(String contactName) {
+        Intent intent = CallingAudioActivity.newIntent(this,"Call To " + contactName);
+        MyActivityManager.getManager().finishActivity(CallOutActivity.class);
+        MyActivityManager.getManager().finishActivity(CallInActivity.class);
         startActivityForResult(intent, REQUEST_CODE_CALLING);
     }
 
     @Override
     public void callOut(String contactName) {
-        Intent intent = CallingActivity.newIntent(this,"Call To " + contactName);
-        startActivityForResult(intent, REQUEST_CODE_CALLING);
-    }
-
-    @Override
-    public void calling() {
-
+        Intent intent = CallOutActivity.newIntent(this,"Call To " + contactName);
+        startActivityForResult(intent, REQUEST_CODE_CALLOUT);
     }
 
     @Override
@@ -304,7 +314,7 @@ public class DemoActivity extends AppCompatActivity implements
 
     @Override
     public void disconnected() {
-        MyActivityManager.getManager().finishActivity(CallingActivity.class);
+        MyActivityManager.getManager().finishActivity(CallingAudioActivity.class);
     }
 
     @Override

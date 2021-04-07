@@ -5,10 +5,9 @@ import android.content.Intent;
 
 import androidx.fragment.app.Fragment;
 
-import com.chenchen.android.pjsipdemo.Fragments.CallListenFragment;
-import com.chenchen.android.pjsipdemo.Fragments.CallingFragment;
+import com.chenchen.android.pjsipdemo.Fragments.CallingAudioFragment;
 
-public class CallingActivity extends SimpleFragmentActivity{
+public class CallingAudioActivity extends SimpleFragmentActivity{
 
 
     // 通话页面显示联系人信息
@@ -17,11 +16,11 @@ public class CallingActivity extends SimpleFragmentActivity{
     @Override
     protected Fragment createFragment() {
         String s = getIntent().getStringExtra(EXTRA_CONTACT_NAME);
-        return CallingFragment.newInstance(s);
+        return CallingAudioFragment.newInstance(s);
     }
 
     public static Intent newIntent(Context context, String info){
-        Intent intent = new Intent(context, CallingActivity.class);
+        Intent intent = new Intent(context, CallingAudioActivity.class);
         intent.putExtra(EXTRA_CONTACT_NAME, info);
         return intent;
     }

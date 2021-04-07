@@ -5,22 +5,22 @@ import android.content.Intent;
 
 import androidx.fragment.app.Fragment;
 
-import com.chenchen.android.pjsipdemo.Fragments.CallListenFragment;
+import com.chenchen.android.pjsipdemo.Fragments.CallInFragment;
 
-public class CallListenActivity extends SimpleFragmentActivity{
+public class CallInActivity extends SimpleFragmentActivity{
 
 
     // 来电显示联系人信息
-    private static final String EXTRA_CALL_INFO = "com.chenchen.android.pjsipdemo.call_info";
+    private static final String EXTRA_CALL_INFO = "com.chenchen.android.pjsipdemo.activiys.callinactivity.call_info";
 
     @Override
     protected Fragment createFragment() {
         String callInfo = getIntent().getStringExtra(EXTRA_CALL_INFO);
-        return CallListenFragment.newInstance(callInfo);
+        return CallInFragment.newInstance(callInfo);
     }
 
     public static Intent newIntent(Context context, String info){
-        Intent intent = new Intent(context, CallListenActivity.class);
+        Intent intent = new Intent(context, CallInActivity.class);
         intent.putExtra(EXTRA_CALL_INFO, info);
         return intent;
     }

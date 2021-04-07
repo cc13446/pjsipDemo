@@ -68,9 +68,8 @@ public class CallFragment extends Fragment{
         mNumber = v.findViewById(R.id.tel_num);
         callButton = v.findViewById(R.id.phone_call_button);
         callButton.setOnClickListener(v1 -> {
-            String ip = mNumber.getText().toString();
             call();
-            Logger.error(LOG_TAG, "CALL " + ip);
+            Logger.error(LOG_TAG, "CALL " + mNumber.getText().toString());
         });
 
         View.OnClickListener onClickListener = v1 -> mNumber.setText(mNumber.getText() + ((Button) v1).getText().toString());
@@ -126,5 +125,4 @@ public class CallFragment extends Fragment{
             mSipCall.delete();
         }
     }
-
 }

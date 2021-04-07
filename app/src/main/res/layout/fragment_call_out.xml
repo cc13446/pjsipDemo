@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Fragments.CallListenFragment" >
+    tools:context=".Fragments.CallInFragment" >
 
     <ImageView
         android:id="@+id/contactImageView"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/call_from_text"
+        android:id="@+id/call_to_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
@@ -29,17 +29,6 @@
         app:layout_constraintStart_toStartOf="@+id/contactImageView"
         app:layout_constraintTop_toBottomOf="@+id/contactImageView" />
 
-    <ImageButton
-        android:id="@+id/listen_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:background="#FFFFFF"
-        android:src="@mipmap/ic_listen"
-        app:layout_constraintEnd_toEndOf="@+id/call_from_text"
-        app:layout_constraintHorizontal_bias="0.485"
-        app:layout_constraintStart_toStartOf="@+id/call_from_text"
-        app:layout_constraintTop_toBottomOf="@+id/call_from_text" />
 
     <ImageButton
         android:id="@+id/no_listen_button"
@@ -48,9 +37,8 @@
         android:background="#FFFFFF"
         android:src="@mipmap/ic_no_listen"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/listen_button"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/listen_button"
-        app:layout_constraintTop_toBottomOf="@+id/listen_button"
-        app:layout_constraintVertical_bias="0.165" />
+        app:layout_constraintEnd_toEndOf="@+id/call_to_text"
+        app:layout_constraintStart_toStartOf="@+id/call_to_text"
+        app:layout_constraintTop_toBottomOf="@+id/call_to_text"
+        app:layout_constraintVertical_bias="0.182" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package com.chenchen.android.pjsipdemo.Domain;
 
-import android.view.Surface;
 
 import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
 import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
@@ -11,25 +10,12 @@ import org.pjsip.pjsua2.AudDevManager;
 import org.pjsip.pjsua2.AudioMedia;
 import org.pjsip.pjsua2.Call;
 import org.pjsip.pjsua2.CallInfo;
-import org.pjsip.pjsua2.CallMediaInfo;
 import org.pjsip.pjsua2.CallMediaInfoVector;
 import org.pjsip.pjsua2.CallOpParam;
 import org.pjsip.pjsua2.CallSetting;
-import org.pjsip.pjsua2.CallVidSetStreamParam;
 import org.pjsip.pjsua2.Endpoint;
-import org.pjsip.pjsua2.Media;
-import org.pjsip.pjsua2.OnCallMediaEventParam;
 import org.pjsip.pjsua2.OnCallMediaStateParam;
 import org.pjsip.pjsua2.OnCallStateParam;
-import org.pjsip.pjsua2.RtcpStreamStat;
-import org.pjsip.pjsua2.StreamInfo;
-import org.pjsip.pjsua2.StreamStat;
-import org.pjsip.pjsua2.ToneGenerator;
-import org.pjsip.pjsua2.VideoPreview;
-import org.pjsip.pjsua2.VideoPreviewOpParam;
-import org.pjsip.pjsua2.VideoWindow;
-import org.pjsip.pjsua2.VideoWindowHandle;
-import org.pjsip.pjsua2.pjmedia_event_type;
 import org.pjsip.pjsua2.pjmedia_type;
 import org.pjsip.pjsua2.pjsip_inv_state;
 import org.pjsip.pjsua2.pjsip_role_e;
@@ -41,24 +27,11 @@ public class SipCall extends Call {
 
     private static final String LOG_TAG = SipCall.class.getSimpleName();
 
-    private SipAccount account;
-    private boolean localHold = false;
-    private boolean localMute = false;
-    private boolean localVideoMute = false;
-    private long connectTimestamp = 0;
-    private ToneGenerator toneGenerator = null;
-    private boolean videoCall = false;
-    private boolean videoConference = false;
-    private boolean frontCamera = true;
-
-    private VideoWindow mVideoWindow = null;
-    private VideoPreview mVideoPreview = null;
-
     private CallInfo info = null;
     private pjsip_inv_state state = null;
     private pjsip_role_e role = null;
-    private pjsip_status_code callStatus = null;
-    private int callID = 0;
+
+    private boolean videoCall = false;
 
     /**
      * Incoming call constructor.
@@ -68,7 +41,6 @@ public class SipCall extends Call {
 
     public SipCall(SipAccount acc, int callId) {
         super(acc, callId);
-        account = acc;
     }
 
     /**
@@ -77,17 +49,6 @@ public class SipCall extends Call {
      */
     public SipCall(SipAccount account) {
         super(account);
-        this.account = account;
-    }
-
-    public pjsip_inv_state getCurrentState() {
-        try {
-            CallInfo info = getInfo();
-            return info.getState();
-        } catch (Exception exc) {
-            Logger.error(LOG_TAG, "Error while getting call Info", exc);
-            return pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED;
-        }
     }
 
 
@@ -98,7 +59,6 @@ public class SipCall extends Call {
 
         try {
             info = getInfo();
-            callID = info.getId();
             state = info.getState();
             role = info.getRole();//这个参数就可以判断，这个通话，你是呼出还是呼入
         }catch (Exception ex){
@@ -106,18 +66,18 @@ public class SipCall extends Call {
         }
 
         if (state == pjsip_inv_state.PJSIP_INV_STATE_CALLING) {
-            onCallStateListener.calling();
+            onCallStateListener.callOut(info.getLocalContact());
         } else if (state == pjsip_inv_state.PJSIP_INV_STATE_EARLY) {
             onCallStateListener.early();
         } else if (state == pjsip_inv_state.PJSIP_INV_STATE_CONNECTING) {
             onCallStateListener.connecting();
             // 电话呼出
             if (role == pjsip_role_e.PJSIP_ROLE_UAC) {
-                onCallStateListener.callOut(info.getRemoteContact());
+                onCallStateListener.callingOut(info.getRemoteContact());
             }
             //电话呼入
             else if (role == pjsip_role_e.PJSIP_ROLE_UAS) {
-                onCallStateListener.callIn(info.getRemoteContact());
+                onCallStateListener.callingIn(info.getRemoteContact());
             }
         } else if (state == pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED) {
             onCallStateListener.confirmed();
