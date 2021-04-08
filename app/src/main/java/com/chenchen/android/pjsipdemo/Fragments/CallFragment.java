@@ -27,6 +27,7 @@ public class CallFragment extends Fragment{
 
     private TextView mNumber;
     private ImageButton callButton;
+    private ImageButton callVideoButton;
     private Button btn_1;
     private Button btn_2;
     private Button btn_3;
@@ -68,8 +69,14 @@ public class CallFragment extends Fragment{
         mNumber = v.findViewById(R.id.tel_num);
         callButton = v.findViewById(R.id.phone_call_button);
         callButton.setOnClickListener(v1 -> {
-            call();
+            call(false);
             Logger.error(LOG_TAG, "CALL " + mNumber.getText().toString());
+        });
+
+        callVideoButton = v.findViewById(R.id.video_call_button);
+        callVideoButton.setOnClickListener(v1 -> {
+            call(true);
+            Logger.error(LOG_TAG, "CALL Video " + mNumber.getText().toString());
         });
 
         View.OnClickListener onClickListener = v1 -> mNumber.setText(mNumber.getText() + ((Button) v1).getText().toString());
@@ -107,11 +114,12 @@ public class CallFragment extends Fragment{
         return v;
     }
 
-    private void call(){
+    private void call(boolean video){
         if(null == acc) {
             return;
         }
         mSipCall = new SipCall(acc, -1);
+        mSipCall.setVideoCall(video);
         acc.setCall(mSipCall);
         CallOpParam prm = new CallOpParam();
 

@@ -90,6 +90,8 @@ public class SipAccount extends Account {
             AuthCredInfo cred = new AuthCredInfo("digest", "*", mUser.getUserName(), 0, mUser.getPassWord());
             accountConfig.getSipConfig().getAuthCreds().add( cred );
             // Create the account
+            accountConfig.getVideoConfig().setAutoShowIncoming(true);
+            accountConfig.getVideoConfig().setAutoTransmitOutgoing(true);
             acc.create(accountConfig);
         } catch (Exception e) {
             System.out.println(e.toString());
