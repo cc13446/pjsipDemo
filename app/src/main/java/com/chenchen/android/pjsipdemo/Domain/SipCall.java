@@ -33,6 +33,7 @@ import org.pjsip.pjsua2.pjsua_call_flag;
 import org.pjsip.pjsua2.pjsua_call_media_status;
 
 
+
 public class SipCall extends Call {
 
     private static final String LOG_TAG = SipCall.class.getSimpleName();
@@ -52,6 +53,9 @@ public class SipCall extends Call {
 
     public void setVideoCall(boolean videoCall) {
         this.videoCall = videoCall;
+    }
+    public boolean getVideoCall(){
+        return videoCall;
     }
 
     @Override
@@ -91,9 +95,12 @@ public class SipCall extends Call {
     public void acceptIncomingCall() {
         CallOpParam param = new CallOpParam();
         param.setStatusCode(pjsip_status_code.PJSIP_SC_OK);
-        setMediaParams(param);
+        CallSetting callSetting = param.getOpt();
+        callSetting.setAudioCount(1);
+        callSetting.setVideoCount(videoCall ? 1 : 0);
+
+
         if (!videoCall) {
-            CallSetting callSetting = param.getOpt();
             callSetting.setFlag(pjsua_call_flag.PJSUA_CALL_INCLUDE_DISABLED_MEDIA.swigValue());
         }
         try {
@@ -103,11 +110,6 @@ public class SipCall extends Call {
         }
     }
 
-    private void setMediaParams(CallOpParam param) {
-        CallSetting callSetting = param.getOpt();
-        callSetting.setAudioCount(1);
-        callSetting.setVideoCount(videoCall ? 1 : 0);
-    }
 
     public void sendBusyHereToIncomingCall() {
         CallOpParam param = new CallOpParam();
@@ -144,7 +146,9 @@ public class SipCall extends Call {
 
     @Override
     public void makeCall(String dst_uri, CallOpParam prm) throws java.lang.Exception {
-        setMediaParams(prm);
+        CallSetting callSetting = prm.getOpt();
+        callSetting.setAudioCount(1);
+        callSetting.setVideoCount(videoCall ? 1 : 0);
         super.makeCall(dst_uri, prm);
     }
 
@@ -182,7 +186,7 @@ public class SipCall extends Call {
         // connect the call audio media to sound device
         try {
             if (audioMedia != null) {
-                AudDevManager mgr = Endpoint.instance().audDevManager();
+                AudDevManager mgr = SipEndPoint.getInstance().audDevManager();
                 audioMedia.startTransmit(mgr.getPlaybackDevMedia());
                 mgr.getCaptureDevMedia().startTransmit(audioMedia);
             }

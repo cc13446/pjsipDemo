@@ -288,17 +288,31 @@ public class DemoActivity extends AppCompatActivity implements
     // OnCallstateListener
     @Override
     public void callingIn(String contactName) {
-        Intent intent = CallingAudioActivity.newIntent(this,"Call From " + contactName);
         MyActivityManager.getManager().finishActivity(CallOutActivity.class);
         MyActivityManager.getManager().finishActivity(CallInActivity.class);
+
+        Intent intent;
+        if(!acc.getCall().getVideoCall()){
+            intent = CallingAudioActivity.newIntent(this, "Call From " + contactName);
+        }
+        else{
+            intent = CallingVideoActivity.newIntent(this, "Call From " + contactName);
+        }
         startActivityForResult(intent, REQUEST_CODE_CALLING);
+
     }
 
     @Override
     public void callingOut(String contactName) {
-        Intent intent = CallingAudioActivity.newIntent(this,"Call To " + contactName);
         MyActivityManager.getManager().finishActivity(CallOutActivity.class);
         MyActivityManager.getManager().finishActivity(CallInActivity.class);
+        Intent intent;
+        if(!acc.getCall().getVideoCall()){
+            intent = CallingAudioActivity.newIntent(this, "Call To " + contactName);
+        }
+        else{
+            intent = CallingVideoActivity.newIntent(this, "Call To " + contactName);
+        }
         startActivityForResult(intent, REQUEST_CODE_CALLING);
     }
 
@@ -328,6 +342,7 @@ public class DemoActivity extends AppCompatActivity implements
         MyActivityManager.getManager().finishActivity(CallOutActivity.class);
         MyActivityManager.getManager().finishActivity(CallInActivity.class);
         MyActivityManager.getManager().finishActivity(CallingAudioActivity.class);
+        MyActivityManager.getManager().finishActivity(CallingVideoActivity.class);
     }
 
     @Override

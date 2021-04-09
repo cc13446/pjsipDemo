@@ -118,6 +118,9 @@ public class CallFragment extends Fragment{
         if(null == acc) {
             return;
         }
+        mSipCall = acc.getCall();
+        if(null != mSipCall && !mSipCall.isActive()) mSipCall.delete();
+        else if(null != mSipCall && mSipCall.isActive()) return;
         mSipCall = new SipCall(acc, -1);
         mSipCall.setVideoCall(video);
         acc.setCall(mSipCall);

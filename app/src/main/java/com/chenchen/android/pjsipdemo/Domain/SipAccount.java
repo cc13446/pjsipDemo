@@ -13,6 +13,7 @@ import org.pjsip.pjsua2.AccountConfig;
 import org.pjsip.pjsua2.AuthCredInfo;
 import org.pjsip.pjsua2.CallInfo;
 import org.pjsip.pjsua2.CallOpParam;
+import org.pjsip.pjsua2.CallSetting;
 import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnRegStateParam;
 import org.pjsip.pjsua2.pjsip_status_code;
@@ -46,6 +47,9 @@ public class SipAccount extends Account {
         mUser = user;
     }
 
+    public static SipAccount getInstance(){
+        return acc;
+    }
 
     public static SipAccount getInstance(User user){
         if(null == acc){
@@ -69,16 +73,20 @@ public class SipAccount extends Account {
 
     @Override
     public void onIncomingCall(OnIncomingCallParam prm) {
-        if(null != mCall && mCall.isActive()){
-            return;
-        }
-        mCall =  new SipCall(acc, prm.getCallId());
-        // 获取来电信息
-        String info = prm.getRdata().getWholeMsg();
-        int i = info.lastIndexOf("Contact:");
-        info = info.substring(i, i + 30);
+        if(null != mCall && !mCall.isActive()) mCall.delete();
+        else if(null != mCall && mCall.isActive()) return;
+        try{
+            mCall =  new SipCall(acc, prm.getCallId());
+            CallInfo callInfo = mCall.getInfo();
+            if(callInfo.getRemVideoCount() > 0) mCall.setVideoCall(true);
 
-        ((DemoActivity)MyActivityManager.getManager().findActivity(DemoActivity.class)).startCallListenActivity(info);
+            ((DemoActivity)MyActivityManager.getManager().findActivity(DemoActivity.class)).startCallListenActivity(callInfo.getRemoteContact());
+
+        }catch (Exception e){
+            Logger.error(LOG_TAG, e.toString());
+        }
+
+
 
     }
 
@@ -90,8 +98,8 @@ public class SipAccount extends Account {
             AuthCredInfo cred = new AuthCredInfo("digest", "*", mUser.getUserName(), 0, mUser.getPassWord());
             accountConfig.getSipConfig().getAuthCreds().add( cred );
             // Create the account
-            accountConfig.getVideoConfig().setAutoShowIncoming(true);
-            accountConfig.getVideoConfig().setAutoTransmitOutgoing(true);
+            //accountConfig.getVideoConfig().setAutoShowIncoming(true);
+            //accountConfig.getVideoConfig().setAutoTransmitOutgoing(true);
             acc.create(accountConfig);
         } catch (Exception e) {
             System.out.println(e.toString());

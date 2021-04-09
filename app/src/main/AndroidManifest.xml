@@ -39,6 +39,7 @@
         <activity android:name=".Activitys.CallInActivity" />
         <activity android:name=".Activitys.CallOutActivity" />
         <activity android:name=".Activitys.CallingAudioActivity" />
+        <activity android:name=".Activitys.CallingVideoActivity" />
         <activity android:name=".Activitys.DemoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

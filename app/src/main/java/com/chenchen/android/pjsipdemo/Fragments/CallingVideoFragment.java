@@ -14,6 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chenchen.android.pjsipdemo.R;
+import com.chenchen.android.pjsipdemo.VideoSurfaceHolders.VideoPreviewHolder;
+import com.chenchen.android.pjsipdemo.VideoSurfaceHolders.VideoWindowHolder;
+
+import org.pjsip.pjsua2.VideoPreview;
+import org.pjsip.pjsua2.VideoWindowHandle;
 
 import java.util.Objects;
 
@@ -21,6 +26,8 @@ public class CallingVideoFragment extends Fragment {
 
     private SurfaceView videoWindow;
     private SurfaceView videoPreview;
+    private VideoPreviewHolder mVideoPreviewHolder;
+    private VideoWindowHolder mVideoWindowHolder;
 
     private TextView contactNameText;
     private Button hangUpBtn;
@@ -57,6 +64,14 @@ public class CallingVideoFragment extends Fragment {
 
         videoWindow = v.findViewById(R.id.video_window);
         videoPreview = v.findViewById(R.id.video_preview);
+        mVideoPreviewHolder = new VideoPreviewHolder();
+        mVideoWindowHolder = new VideoWindowHolder();
+
+        videoPreview.setVisibility(View.VISIBLE);
+        videoWindow.setVisibility(View.VISIBLE);
+
+        videoPreview.getHolder().addCallback(mVideoPreviewHolder);
+        videoWindow.getHolder().addCallback(mVideoWindowHolder);
 
         hangUpBtn = v.findViewById(R.id.hang_up_btn);
         louderBtn = v.findViewById(R.id.louder_btn);
