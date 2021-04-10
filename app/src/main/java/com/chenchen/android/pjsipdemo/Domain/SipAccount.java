@@ -12,16 +12,9 @@ import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.AccountConfig;
 import org.pjsip.pjsua2.AuthCredInfo;
 import org.pjsip.pjsua2.CallInfo;
-import org.pjsip.pjsua2.CallOpParam;
-import org.pjsip.pjsua2.CallSetting;
 import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnRegStateParam;
-import org.pjsip.pjsua2.StringVector;
 import org.pjsip.pjsua2.pj_qos_type;
-import org.pjsip.pjsua2.pjsip_status_code;
-
-import java.util.HashMap;
-import java.util.Set;
 
 
 public class SipAccount extends Account {
@@ -29,13 +22,13 @@ public class SipAccount extends Account {
     private static final String LOG_TAG = SipAccount.class.getSimpleName();
 
 
-    public static SipAccount acc;
+    private static SipAccount acc;
     private User mUser;
     private SipCall mCall;
 
     private AccountConfig accountConfig;
 
-    public SipAccount() {
+    private SipAccount() {
 
     }
 
@@ -67,6 +60,7 @@ public class SipAccount extends Account {
         return acc;
     }
 
+    // 注册状态回调
     @Override
     public void onRegState(OnRegStateParam prm) {
         Handler handler = new Handler(Looper.getMainLooper());
@@ -79,6 +73,7 @@ public class SipAccount extends Account {
 
     }
 
+    // 呼入电话回调
     @Override
     public void onIncomingCall(OnIncomingCallParam prm) {
         if(null != mCall && !mCall.isActive()) mCall.delete();
@@ -88,7 +83,7 @@ public class SipAccount extends Account {
             CallInfo callInfo = mCall.getInfo();
             if(callInfo.getRemVideoCount() > 0) mCall.setVideoCall(true);
 
-            ((DemoActivity)MyActivityManager.getManager().findActivity(DemoActivity.class)).startCallListenActivity(callInfo.getRemoteContact());
+            ((DemoActivity)MyActivityManager.getManager().findActivity(DemoActivity.class)).startCallInActivity(callInfo.getRemoteContact());
 
         }catch (Exception e){
             Logger.error(LOG_TAG, e.toString());
@@ -98,6 +93,7 @@ public class SipAccount extends Account {
 
     }
 
+    // 注册
     public void register() {
         try {
             accountConfig = new AccountConfig();
@@ -113,7 +109,7 @@ public class SipAccount extends Account {
             accountConfig.getVideoConfig().setDefaultRenderDevice(0);
             acc.create(accountConfig);
         } catch (Exception e) {
-            System.out.println(e.toString());
+           Logger.error(LOG_TAG, e.toString());
         }
     }
 }

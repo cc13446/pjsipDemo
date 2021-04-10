@@ -169,6 +169,7 @@ public class CallingVideoFragment extends Fragment {
 
     }
 
+    // 设置视频方向
     private void setCaptureOrient(pjmedia_orient orient){
         if (SipEndPoint.getInstance() != null && SipAccount.getInstance() != null) {
             try {

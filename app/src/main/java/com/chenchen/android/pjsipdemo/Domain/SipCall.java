@@ -59,6 +59,8 @@ public class SipCall extends Call {
         return videoCall;
     }
 
+
+    //电话状态回调
     @Override
     public void onCallState(OnCallStateParam prm) {
         super.onCallState(prm);
@@ -67,7 +69,8 @@ public class SipCall extends Call {
         try {
             info = getInfo();
             state = info.getState();
-            role = info.getRole();//这个参数就可以判断，这个通话，你是呼出还是呼入
+            // 这个参数就可以判断，这个通话，你是呼出还是呼入
+            role = info.getRole();
         }catch (Exception ex){
             Logger.error(LOG_TAG, "Error while getting call status", ex);
         }
@@ -94,6 +97,7 @@ public class SipCall extends Call {
         }
     }
 
+    //接电话
     public void acceptIncomingCall() {
         CallOpParam param = new CallOpParam();
         param.setStatusCode(pjsip_status_code.PJSIP_SC_OK);
@@ -134,7 +138,7 @@ public class SipCall extends Call {
             Logger.error(LOG_TAG, "Failed to decline incoming call", exc);
         }
     }
-
+    // 挂电话
     public void hangUp() {
         CallOpParam param = new CallOpParam();
         param.setStatusCode(pjsip_status_code.PJSIP_SC_DECLINE);
@@ -146,6 +150,7 @@ public class SipCall extends Call {
         }
     }
 
+    // 打电话
     @Override
     public void makeCall(String dst_uri, CallOpParam prm) throws java.lang.Exception {
         CallSetting callSetting = prm.getOpt();
@@ -154,6 +159,7 @@ public class SipCall extends Call {
         super.makeCall(dst_uri, prm);
     }
 
+    // 处理媒体流
     @Override
     public void onCallMediaState(OnCallMediaStateParam prm) {
         CallInfo info;

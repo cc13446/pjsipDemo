@@ -36,6 +36,7 @@ public class SipEndPoint extends Endpoint {
             sipEndPoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_UDP, sipTpConfig);
             sipEndPoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_TCP, sipTpConfig);
 
+            // 设置视频分辨率
             VidCodecParam param = sipEndPoint.getVideoCodecParam("H264/97");
             MediaFormatVideo codecFormatVideo = param.getEncFmt();
             codecFormatVideo.setHeight(1280);

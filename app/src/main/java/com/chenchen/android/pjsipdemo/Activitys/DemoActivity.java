@@ -1,5 +1,5 @@
 package com.chenchen.android.pjsipdemo.Activitys;
-
+// 主界面
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -35,7 +35,7 @@ public class DemoActivity extends AppCompatActivity implements
 
 
     private static final String LOG_TAG = DemoActivity.class.getSimpleName();
-    // fragments切换
+    // fragments 切换
     public static final int PAGE_CONTACT = 0;
     public static final int PAGE_PHONE = 1;
     public static final int PAGE_MESSAGE = 2;
@@ -166,6 +166,7 @@ public class DemoActivity extends AppCompatActivity implements
                 }
             }
         }
+        // 电话中
         else if(REQUEST_CODE_CALLING == requestCode){
             SipCall sipCall = acc.getCall();
             if(Activity.RESULT_FIRST_USER == resultCode){
@@ -174,6 +175,7 @@ public class DemoActivity extends AppCompatActivity implements
                 }
             }
         }
+        // 电话呼出
         else if(REQUEST_CODE_CALLOUT == requestCode){
             SipCall sipCall = acc.getCall();
             if(Activity.RESULT_FIRST_USER == resultCode){
@@ -276,10 +278,10 @@ public class DemoActivity extends AppCompatActivity implements
         mToolbar.setTitle(state);
     }
 
-    // 启动Activiy
+    // 启动Activity
 
-    // 启动来电话Activity
-    public void startCallListenActivity(String info){
+    // 启动电话呼入Activity
+    public void startCallInActivity(String info){
         startActivityForResult(CallInActivity.newIntent(this, info), REQUEST_CODE_CALLIN);
     }
     // 启动user activity
