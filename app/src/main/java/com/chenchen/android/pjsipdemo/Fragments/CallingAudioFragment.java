@@ -3,8 +3,12 @@ package com.chenchen.android.pjsipdemo.Fragments;
 import android.app.Activity;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +19,18 @@ import android.widget.Toast;
 import com.chenchen.android.pjsipdemo.R;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CallingAudioFragment extends Fragment {
+    private static final String LOG_TAG = CallingAudioFragment.class.getSimpleName();
+
+    private Timer timer;
+    private TimerTask timerTask;
+    private Handler handler;
+    private int minute = 0;
+    private int second = 0;
+    private int hour = 0;
 
     private TextView contactNameText;
     private TextView timeText;
@@ -43,6 +57,21 @@ public class CallingAudioFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContactName = getArguments().getString(CONTACTNAME);
+        handler  = new Handler(Looper.myLooper()) {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                second ++;
+                if(60 <= second){
+                    minute ++;
+                    second = 0;
+                }
+                if(60 <= minute){
+                    hour ++;
+                    minute = 0;
+                }
+                timeText.setText(String.format("%02d:%02d:%02d", hour, minute, second));
+            }
+        };
     }
 
     @Override
@@ -64,7 +93,28 @@ public class CallingAudioFragment extends Fragment {
             Toast.makeText(getActivity(),"免提", Toast.LENGTH_SHORT).show();
         });
 
-
+        startTimer();
         return v;
+    }
+    private void startTimer() {
+        //防止多次点击开启计时器
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (timerTask != null) {
+            timerTask = null;
+        }
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Message msg = new Message();
+                msg.what = 0;
+                handler.sendMessage(msg);
+            }
+        };
+
+        timer = new Timer();
+        timer.schedule(timerTask, 0, 1000);
     }
 }

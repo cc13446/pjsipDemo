@@ -248,6 +248,7 @@ public class SipCall extends Call {
             videoWindowHandle.getHandle().setWindow(surface);
             VideoPreviewOpParam videoPreviewOpParam = new VideoPreviewOpParam();
             videoPreviewOpParam.setWindow(videoWindowHandle);
+            Logger.error(LOG_TAG, "able to start Video Preview");
             try {
                 mVideoPreview.start(videoPreviewOpParam);
             } catch (Exception ex) {
