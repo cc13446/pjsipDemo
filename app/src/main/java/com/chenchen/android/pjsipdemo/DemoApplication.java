@@ -11,9 +11,18 @@ public class DemoApplication extends Application {
     private SipEndPoint mSipEndPoint;
     private MyActivityManager mMyActivityManager;
 
+    private static final String LOG_TAG = DemoApplication.class.getSimpleName();
+
     static {
+        try{
+            System.loadLibrary("openh264");
+            // Ticket #1937: libyuv is now included as static lib
+            //System.loadLibrary("yuv");
+        } catch (UnsatisfiedLinkError e) {
+            Logger.error(LOG_TAG,"UnsatisfiedLinkError: " + e.getMessage());
+        }
         System.loadLibrary("pjsua2");
-        System.out.println("Library loaded");
+        Logger.error(LOG_TAG,"Library loaded");
     }
 
     @Override

@@ -16,6 +16,8 @@ import org.pjsip.pjsua2.CallOpParam;
 import org.pjsip.pjsua2.CallSetting;
 import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnRegStateParam;
+import org.pjsip.pjsua2.StringVector;
+import org.pjsip.pjsua2.pj_qos_type;
 import org.pjsip.pjsua2.pjsip_status_code;
 
 import java.util.HashMap;
@@ -31,8 +33,14 @@ public class SipAccount extends Account {
     private User mUser;
     private SipCall mCall;
 
+    private AccountConfig accountConfig;
+
     public SipAccount() {
 
+    }
+
+    public AccountConfig getAccountConfig() {
+        return accountConfig;
     }
 
     public SipCall getCall() {
@@ -92,14 +100,17 @@ public class SipAccount extends Account {
 
     public void register() {
         try {
-            AccountConfig accountConfig = new AccountConfig();
+            accountConfig = new AccountConfig();
             accountConfig.setIdUri("sip:" + mUser.getUserName() + "@" + mUser.getUrl());
             accountConfig.getRegConfig().setRegistrarUri("sip:" + mUser.getUrl());
             AuthCredInfo cred = new AuthCredInfo("digest", "*", mUser.getUserName(), 0, mUser.getPassWord());
             accountConfig.getSipConfig().getAuthCreds().add( cred );
             // Create the account
-            //accountConfig.getVideoConfig().setAutoShowIncoming(true);
-            //accountConfig.getVideoConfig().setAutoTransmitOutgoing(true);
+            accountConfig.getMediaConfig().getTransportConfig().setQosType(pj_qos_type.PJ_QOS_TYPE_VIDEO);
+            accountConfig.getVideoConfig().setAutoShowIncoming(true);
+            accountConfig.getVideoConfig().setAutoTransmitOutgoing(true);
+            accountConfig.getVideoConfig().setDefaultCaptureDevice(1);
+            accountConfig.getVideoConfig().setDefaultRenderDevice(0);
             acc.create(accountConfig);
         } catch (Exception e) {
             System.out.println(e.toString());

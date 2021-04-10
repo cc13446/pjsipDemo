@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 
 import com.chenchen.android.pjsipdemo.Domain.SipAccount;
 import com.chenchen.android.pjsipdemo.Domain.SipCall;
+import com.chenchen.android.pjsipdemo.Logger;
+
 import org.pjsip.pjsua2.VideoWindowHandle;
 
 public class VideoPreviewHolder implements SurfaceHolder.Callback {
@@ -28,12 +30,12 @@ public class VideoPreviewHolder implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        updateVideoPreview(holder);
     }
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
         updateVideoPreview(holder);
+        Logger.error(LOG_TAG, "Preview Size: " + width + height);
     }
 
     @Override

@@ -8,9 +8,6 @@ import com.chenchen.android.pjsipdemo.Domain.SipAccount;
 import com.chenchen.android.pjsipdemo.Domain.SipCall;
 import com.chenchen.android.pjsipdemo.Logger;
 
-import org.pjsip.pjsua2.VideoPreviewOpParam;
-import org.pjsip.pjsua2.VideoWindowHandle;
-
 public class VideoWindowHolder  implements SurfaceHolder.Callback {
 
     private static final String LOG_TAG = VideoWindowHolder.class.getSimpleName();
@@ -25,18 +22,18 @@ public class VideoWindowHolder  implements SurfaceHolder.Callback {
         sipCall = sipAccount.getCall();
         if(null == sipCall) return;
         if(null != sipCall.getVideoPreview() && null != sipCall.getVideoWindow()){
-            sipCall.setIncomingVideoFeed(holder.getSurface());
+            sipCall.startIncomingVideoFeed(holder.getSurface());
         }
     }
 
     @Override
-    public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        updateVideoPreview(holder);
+    public void surfaceCreated(@NonNull SurfaceHolder holder){
     }
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
         updateVideoPreview(holder);
+        Logger.error(LOG_TAG, "Window Size: " + width + height);
     }
 
     @Override

@@ -18,6 +18,7 @@ import org.pjsip.pjsua2.CallOpParam;
 import org.pjsip.pjsua2.CallSetting;
 import org.pjsip.pjsua2.Endpoint;
 import org.pjsip.pjsua2.Media;
+import org.pjsip.pjsua2.MediaSize;
 import org.pjsip.pjsua2.OnCallMediaStateParam;
 import org.pjsip.pjsua2.OnCallStateParam;
 import org.pjsip.pjsua2.VideoPreview;
@@ -89,6 +90,7 @@ public class SipCall extends Call {
             onCallStateListener.confirmed();
         } else if (state == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED) {
             onCallStateListener.disconnected();
+            stopVideoFeeds();
         }
     }
 
@@ -161,10 +163,10 @@ public class SipCall extends Call {
             Logger.error(LOG_TAG, "onCallMediaState: error while getting call info", exc);
             return;
         }
-
-        for (int i = 0; i < info.getMedia().size(); i++) {
+        CallMediaInfoVector cmiv = info.getMedia();
+        for (int i = 0; i < cmiv.size(); i++) {
             Media media = getMedia(i);
-            CallMediaInfo mediaInfo = info.getMedia().get(i);
+            CallMediaInfo mediaInfo = cmiv.get(i);
 
             if (mediaInfo.getType() == pjmedia_type.PJMEDIA_TYPE_AUDIO
                     && media != null
@@ -187,8 +189,8 @@ public class SipCall extends Call {
         try {
             if (audioMedia != null) {
                 AudDevManager mgr = SipEndPoint.getInstance().audDevManager();
-                audioMedia.startTransmit(mgr.getPlaybackDevMedia());
                 mgr.getCaptureDevMedia().startTransmit(audioMedia);
+                audioMedia.startTransmit(mgr.getPlaybackDevMedia());
             }
         } catch (Exception exc) {
             Logger.error(LOG_TAG, "Error while connecting audio media to sound device", exc);
@@ -227,7 +229,7 @@ public class SipCall extends Call {
         stopPreviewVideoFeed();
     }
 
-    public void setIncomingVideoFeed(Surface surface) {
+    public void startIncomingVideoFeed(Surface surface) {
         if (mVideoWindow != null) {
             VideoWindowHandle videoWindowHandle = new VideoWindowHandle();
             videoWindowHandle.getHandle().setWindow(surface);

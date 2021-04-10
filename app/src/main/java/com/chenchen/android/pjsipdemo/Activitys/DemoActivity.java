@@ -21,6 +21,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.chenchen.android.pjsipdemo.Domain.SipAccount;
 import com.chenchen.android.pjsipdemo.Domain.SipCall;
 import com.chenchen.android.pjsipdemo.Domain.User;
+import com.chenchen.android.pjsipdemo.Logger;
 import com.chenchen.android.pjsipdemo.MyActivityManager;
 import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
 import com.chenchen.android.pjsipdemo.Interfaces.OnPJSipRegStateListener;
@@ -33,6 +34,7 @@ public class DemoActivity extends AppCompatActivity implements
         ViewPager.OnPageChangeListener, OnCallStateListener, OnPJSipRegStateListener {
 
 
+    private static final String LOG_TAG = DemoActivity.class.getSimpleName();
     // fragments切换
     public static final int PAGE_CONTACT = 0;
     public static final int PAGE_PHONE = 1;
@@ -288,6 +290,8 @@ public class DemoActivity extends AppCompatActivity implements
     // OnCallstateListener
     @Override
     public void callingIn(String contactName) {
+        Logger.error(LOG_TAG, "CallingIn");
+        myRequestPermissions();
         MyActivityManager.getManager().finishActivity(CallOutActivity.class);
         MyActivityManager.getManager().finishActivity(CallInActivity.class);
 
@@ -304,6 +308,8 @@ public class DemoActivity extends AppCompatActivity implements
 
     @Override
     public void callingOut(String contactName) {
+        Logger.error(LOG_TAG, "CallingOut");
+        myRequestPermissions();
         MyActivityManager.getManager().finishActivity(CallOutActivity.class);
         MyActivityManager.getManager().finishActivity(CallInActivity.class);
         Intent intent;
@@ -318,27 +324,30 @@ public class DemoActivity extends AppCompatActivity implements
 
     @Override
     public void callOut(String contactName) {
+        Logger.error(LOG_TAG, "CallOut");
         Intent intent = CallOutActivity.newIntent(this,"Call To " + contactName);
         startActivityForResult(intent, REQUEST_CODE_CALLOUT);
     }
 
     @Override
     public void early() {
-
+        Logger.error(LOG_TAG, "early");
     }
 
     @Override
     public void connecting() {
+        Logger.error(LOG_TAG, "connecting");
 
     }
 
     @Override
     public void confirmed() {
-
+        Logger.error(LOG_TAG, "confirmed");
     }
 
     @Override
     public void disconnected() {
+        Logger.error(LOG_TAG, "disconnected");
         MyActivityManager.getManager().finishActivity(CallOutActivity.class);
         MyActivityManager.getManager().finishActivity(CallInActivity.class);
         MyActivityManager.getManager().finishActivity(CallingAudioActivity.class);
@@ -347,7 +356,7 @@ public class DemoActivity extends AppCompatActivity implements
 
     @Override
     public void error() {
-
+        Logger.error(LOG_TAG, "error");
     }
 
     //OnPjSipRegStateListener
