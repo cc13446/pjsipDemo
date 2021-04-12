@@ -68,7 +68,7 @@ public class MessageFragment extends Fragment {
         messageToSend = v.findViewById(R.id.message_to_send);
         sendBtn = v.findViewById(R.id.send);
         sendBtn.setOnClickListener(v1 -> {
-            String s = messageToSend.toString();
+            String s = messageToSend.getText().toString();
             SendInstantMessageParam param = new SendInstantMessageParam();
             param.setContent(s);
             try {

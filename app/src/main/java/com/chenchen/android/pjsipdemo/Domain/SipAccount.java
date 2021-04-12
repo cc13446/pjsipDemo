@@ -109,6 +109,7 @@ public class SipAccount extends Account {
 
     @Override
     public  void onInstantMessage(OnInstantMessageParam prm){
-
+        String s = prm.getMsgBody();
+        ((DemoActivity)MyActivityManager.getManager().findActivity(DemoActivity.class)).startMessageActivity(prm.getRdata().getInfo());
     }
 }
