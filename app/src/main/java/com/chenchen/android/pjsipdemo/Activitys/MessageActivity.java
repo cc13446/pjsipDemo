@@ -1,0 +1,26 @@
+package com.chenchen.android.pjsipdemo.Activitys;
+
+import android.content.Context;
+import android.content.Intent;
+
+import androidx.fragment.app.Fragment;
+
+import com.chenchen.android.pjsipdemo.Fragments.BuddyFragment;
+import com.chenchen.android.pjsipdemo.Fragments.MessageFragment;
+
+public class MessageActivity extends SimpleFragmentActivity {
+
+    private static final String EXTRA_BUDDY_INFO = "com.chenchen.android.pjsipdemo.activiys.messageactivity.buddyinfo";
+
+    @Override
+    protected Fragment createFragment() {
+        String buddyInfo = getIntent().getStringExtra(EXTRA_BUDDY_INFO);
+        return MessageFragment.newInstance(buddyInfo);
+    }
+
+    public static Intent newIntent(Context context, String info){
+        Intent intent = new Intent(context, MessageActivity.class);
+        intent.putExtra(EXTRA_BUDDY_INFO, info);
+        return intent;
+    }
+}

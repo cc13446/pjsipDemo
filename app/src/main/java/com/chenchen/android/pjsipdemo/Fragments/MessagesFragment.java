@@ -12,10 +12,10 @@ import com.chenchen.android.pjsipdemo.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ContactFragment#newInstance} factory method to
+ * Use the {@link MessagesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ContactFragment extends Fragment {
+public class MessagesFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class ContactFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ContactFragment() {
+    public MessagesFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class ContactFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment contactFragment.
+     * @return A new instance of fragment MessageFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ContactFragment newInstance(String param1, String param2) {
-        ContactFragment fragment = new ContactFragment();
+    public static MessagesFragment newInstance(String param1, String param2) {
+        MessagesFragment fragment = new MessagesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class ContactFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_contact, container, false);
+        return inflater.inflate(R.layout.fragment_messages, container, false);
     }
 }

@@ -42,7 +42,7 @@ public class UserFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_user, container, false);
-        mUserNameText = (TextView)v.findViewById(R.id.UserName);
+        mUserNameText = (TextView)v.findViewById(R.id.user_name);
         mUserNameText.setText(mUser.getUserName());
         mPassWordText = (TextView)v.findViewById(R.id.PassWord);
         mPassWordText.setText(mUser.getPassWord());

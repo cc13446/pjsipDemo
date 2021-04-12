@@ -11,14 +11,18 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
 import com.chenchen.android.pjsipdemo.Domain.SipAccount;
 import com.chenchen.android.pjsipdemo.Domain.SipCall;
 import com.chenchen.android.pjsipdemo.Domain.SipEndPoint;
 import com.chenchen.android.pjsipdemo.Logger;
+import com.chenchen.android.pjsipdemo.MyActivityManager;
 import com.chenchen.android.pjsipdemo.R;
 import com.chenchen.android.pjsipdemo.Domain.User;
 
 import org.pjsip.pjsua2.*;
+
+import java.util.Objects;
 
 
 public class CallFragment extends Fragment{
@@ -28,6 +32,7 @@ public class CallFragment extends Fragment{
     private TextView mNumber;
     private ImageButton callButton;
     private ImageButton callVideoButton;
+    private ImageButton addContacButton;
     private Button btn_1;
     private Button btn_2;
     private Button btn_3;
@@ -57,7 +62,7 @@ public class CallFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUser = User.getInstance(getActivity());
-        acc = SipAccount.getInstance(mUser);
+        acc = SipAccount.getInstance();
     }
 
     @Override
@@ -77,6 +82,11 @@ public class CallFragment extends Fragment{
         callVideoButton.setOnClickListener(v1 -> {
             call(true);
             Logger.error(LOG_TAG, "CALL Video " + mNumber.getText().toString());
+        });
+        addContacButton = v.findViewById(R.id.add_button);
+        addContacButton.setOnClickListener(v1->{
+            ((DemoActivity) Objects.requireNonNull(getActivity())).startBuddyActivity(mNumber.getText().toString());
+            Logger.error(LOG_TAG, "ADD " + mNumber.getText().toString());
         });
 
         View.OnClickListener onClickListener = v1 -> mNumber.setText(mNumber.getText() + ((Button) v1).getText().toString());

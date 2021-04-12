@@ -2,6 +2,9 @@ package com.chenchen.android.pjsipdemo;
 
 import android.app.Application;
 
+import com.chenchen.android.pjsipdemo.Dao.DataBaseHelper;
+import com.chenchen.android.pjsipdemo.Domain.SipAccount;
+import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
 import com.chenchen.android.pjsipdemo.Domain.SipEndPoint;
 import com.chenchen.android.pjsipdemo.Domain.User;
 
@@ -9,7 +12,12 @@ public class DemoApplication extends Application {
 
     private User mUser;
     private SipEndPoint mSipEndPoint;
+    private SipAccount mSipAccount;
     private MyActivityManager mMyActivityManager;
+    private DataBaseHelper mDataBaseHelper;
+    private SipBuddyList mSipBuddyList;
+
+    private static DemoApplication demoApplication;
 
     private static final String LOG_TAG = DemoApplication.class.getSimpleName();
 
@@ -28,11 +36,15 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        demoApplication = this;
         // 单例初始化
         mUser = User.getInstance(this);
         mMyActivityManager = MyActivityManager.getManager();
         mSipEndPoint = SipEndPoint.getInstance();
         mSipEndPoint.init();
+        mSipAccount = SipAccount.getInstance();
+        mDataBaseHelper = DataBaseHelper.getInstance(this);
+        mSipBuddyList = SipBuddyList.getInstance();
 
     }
 
@@ -41,5 +53,9 @@ public class DemoApplication extends Application {
 
         mSipEndPoint.destroy();
         super.onTerminate();
+    }
+
+    public static DemoApplication getInstance(){
+        return demoApplication;
     }
 }

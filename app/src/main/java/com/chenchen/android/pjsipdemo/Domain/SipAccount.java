@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
+import com.chenchen.android.pjsipdemo.DemoApplication;
 import com.chenchen.android.pjsipdemo.Interfaces.OnPJSipRegStateListener;
 import com.chenchen.android.pjsipdemo.Logger;
 import com.chenchen.android.pjsipdemo.MyActivityManager;
@@ -13,6 +14,7 @@ import org.pjsip.pjsua2.AccountConfig;
 import org.pjsip.pjsua2.AuthCredInfo;
 import org.pjsip.pjsua2.CallInfo;
 import org.pjsip.pjsua2.OnIncomingCallParam;
+import org.pjsip.pjsua2.OnInstantMessageParam;
 import org.pjsip.pjsua2.OnRegStateParam;
 import org.pjsip.pjsua2.pj_qos_type;
 
@@ -23,7 +25,6 @@ public class SipAccount extends Account {
 
 
     private static SipAccount acc;
-    private User mUser;
     private SipCall mCall;
 
     private AccountConfig accountConfig;
@@ -44,19 +45,12 @@ public class SipAccount extends Account {
         mCall = call;
     }
 
-    public void setUser(User user) {
-        mUser = user;
-    }
 
     public static SipAccount getInstance(){
-        return acc;
-    }
-
-    public static SipAccount getInstance(User user){
         if(null == acc){
             acc = new SipAccount();
+            acc.register();
         }
-        acc.setUser(user);
         return acc;
     }
 
@@ -65,6 +59,7 @@ public class SipAccount extends Account {
     public void onRegState(OnRegStateParam prm) {
         Handler handler = new Handler(Looper.getMainLooper());
         OnPJSipRegStateListener onPJSipRegStateListener = (OnPJSipRegStateListener)MyActivityManager.getManager().findActivity(DemoActivity.class);
+        if(null == onPJSipRegStateListener) return;
         if (prm.getCode().swigValue() / 100 == 2) {
             handler.post(onPJSipRegStateListener::onSuccess);
         } else {
@@ -89,13 +84,12 @@ public class SipAccount extends Account {
             Logger.error(LOG_TAG, e.toString());
         }
 
-
-
     }
 
     // 注册
     public void register() {
         try {
+            User mUser = User.getInstance(DemoApplication.getInstance().getApplicationContext());
             accountConfig = new AccountConfig();
             accountConfig.setIdUri("sip:" + mUser.getUserName() + "@" + mUser.getUrl());
             accountConfig.getRegConfig().setRegistrarUri("sip:" + mUser.getUrl());
@@ -111,5 +105,10 @@ public class SipAccount extends Account {
         } catch (Exception e) {
            Logger.error(LOG_TAG, e.toString());
         }
+    }
+
+    @Override
+    public  void onInstantMessage(OnInstantMessageParam prm){
+
     }
 }

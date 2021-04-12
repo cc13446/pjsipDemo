@@ -4,10 +4,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
 import com.chenchen.android.pjsipdemo.Fragments.CallFragment;
-import com.chenchen.android.pjsipdemo.Fragments.ContactFragment;
-import com.chenchen.android.pjsipdemo.Fragments.MessageFragment;
+import com.chenchen.android.pjsipdemo.Fragments.BuddiesFragment;
+import com.chenchen.android.pjsipdemo.Fragments.MessagesFragment;
 import com.chenchen.android.pjsipdemo.Fragments.RecordFragment;
 
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
@@ -15,18 +14,18 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private final int PAGER_COUNT = 4;
 
-    private ContactFragment mContactFragment = null;
+    private BuddiesFragment mBuddiesFragment = null;
     private CallFragment mCallFragment = null;
-    private MessageFragment mMessageFragment = null;
+    private MessagesFragment mMessagesFragment = null;
     private RecordFragment mRecordFragment = null;
 
 
 
     public MyFragmentPagerAdapter(FragmentManager fm) {
         super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        mContactFragment = new ContactFragment();
+        mBuddiesFragment = new BuddiesFragment();
         mCallFragment = new CallFragment();
-        mMessageFragment = new MessageFragment();
+        mMessagesFragment = new MessagesFragment();
         mRecordFragment = new RecordFragment();
     }
 
@@ -35,10 +34,10 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment = null;
         switch (position) {
             case DemoActivity.PAGE_CONTACT:
-                fragment = mContactFragment;
+                fragment = mBuddiesFragment;
                 break;
             case DemoActivity.PAGE_MESSAGE:
-                fragment = mMessageFragment;
+                fragment = mMessagesFragment;
                 break;
             case DemoActivity.PAGE_PHONE:
                 fragment = mCallFragment;

@@ -43,6 +43,8 @@
 
 
         <activity android:name=".Activitys.UserActivity" />
+        <activity android:name=".Activitys.BuddyActivity" />
+        <activity android:name=".Activitys.MessageActivity" />
         <activity android:name=".Activitys.CallInActivity" />
         <activity android:name=".Activitys.CallOutActivity" />
         <activity android:name=".Activitys.CallingAudioActivity" />

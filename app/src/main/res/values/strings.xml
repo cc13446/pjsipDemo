@@ -32,4 +32,7 @@
     <string name="hang_up">挂断</string>
     <string name="time">time</string>
     <string name="louder">免提</string>
+    <string name="contact_name">Contact Name</string>
+    <string name="contact_state">Contact State</string>
+    <string name="send">发送</string>
 </resources>
