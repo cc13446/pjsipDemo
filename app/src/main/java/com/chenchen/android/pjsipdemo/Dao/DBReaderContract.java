@@ -12,5 +12,6 @@ public final class DBReaderContract {
         public static final String TABLE_NAME = "buddies";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_URL = "url";
+        public static final String COLUMN_NAME_MESSAGE = "message";
     }
 }

@@ -109,7 +109,12 @@ public class SipAccount extends Account {
 
     @Override
     public  void onInstantMessage(OnInstantMessageParam prm){
-        String s = prm.getMsgBody();
-        ((DemoActivity)MyActivityManager.getManager().findActivity(DemoActivity.class)).startMessageActivity(prm.getRdata().getInfo());
+        String msgBody = prm.getMsgBody();
+        String fromUri = prm.getFromUri();
+        String buddyName = fromUri.substring(fromUri.indexOf(':') + 1, fromUri.indexOf("@"));
+        String buddyUrl = fromUri.substring(fromUri.indexOf('@') + 1, fromUri.indexOf(">"));
+        SipBuddyList.getInstance().addSipBuddy(buddyName, buddyUrl);
+        SipBuddy sipBuddy = SipBuddyList.getInstance().getSipBuddy(buddyName);
+        sipBuddy.addMessages(buddyName, msgBody);
     }
 }

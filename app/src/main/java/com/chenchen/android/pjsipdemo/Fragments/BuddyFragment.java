@@ -86,7 +86,6 @@ public class BuddyFragment extends Fragment {
                 Toast.makeText(getContext(),"Domain is empty",Toast.LENGTH_SHORT).show();
                 return;
             }
-
             try{
                SipBuddyList.getInstance().addSipBuddy(buddyName, url);
             }catch (Exception e){

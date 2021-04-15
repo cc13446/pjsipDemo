@@ -47,25 +47,36 @@ public class SipBuddyList {
 
 
     public void addSipBuddy(String buddyName, String buddyUrl){
-        SipBuddy sipBuddy = new SipBuddy(buddyName, buddyUrl);
+        SipBuddy sipBuddy = new SipBuddy(buddyName, buddyUrl, "");
+        SipBuddy old = mBuddyDao.QueryBuddy(buddyName);
         if(sipBuddy.getRegister()) {
-            if (null == mBuddyDao.QueryBuddy(buddyName)) {
+            if (null == old) {
                 mBuddyDao.insertBuddy(sipBuddy);
-                mSipBuddies.add(sipBuddy);
             } else {
-                mBuddyDao.ModifyBuddy(new SipBuddy(buddyName, buddyUrl));
+                if(old.getBuddyUrl().equals(buddyUrl)) return;
+                mBuddyDao.ModifyBuddy(new SipBuddy(buddyName, buddyUrl, old.getMessages()));
                 for(SipBuddy s: mSipBuddies){
                     if(buddyName.equals(s.getBuddyName())){
                         mSipBuddies.remove(s);
                         break;
                     }
                 }
-                mSipBuddies.add(sipBuddy);
             }
+            mSipBuddies.add(sipBuddy);
         }
     }
     public void removeSipBuddy(SipBuddy sipBuddy){
         mSipBuddies.remove(sipBuddy);
         mBuddyDao.DeleteBuddy(sipBuddy);
+    }
+
+    public List<SipBuddy> getMessageSipBuddies(){
+        List<SipBuddy> sipBuddies = new ArrayList<SipBuddy>();
+        for(SipBuddy s:mSipBuddies){
+            if(!s.getMessages().equals("")){
+                sipBuddies.add(s);
+            }
+        }
+        return sipBuddies;
     }
 }

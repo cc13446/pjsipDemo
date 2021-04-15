@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chenchen.android.pjsipdemo.Domain.SipAccount;
 import com.chenchen.android.pjsipdemo.Domain.SipBuddy;
 import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
 import com.chenchen.android.pjsipdemo.Logger;
@@ -73,8 +74,9 @@ public class MessageFragment extends Fragment {
             param.setContent(s);
             try {
                 mSipBuddy.sendInstantMessage(param);
-                mSipBuddy.addMessages(s);
+                mSipBuddy.addMessages("Me",s);
                 UpdateMessages();
+                messageToSend.setText("");
             }catch (Exception e){
                 Logger.error(LOG_TAG, "sendInstantMessage", e);
             }

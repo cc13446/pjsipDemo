@@ -21,7 +21,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + BuddyEntry.TABLE_NAME + " (" +
                     BuddyEntry._ID + " INTEGER PRIMARY KEY," +
                     BuddyEntry.COLUMN_NAME_NAME + " TEXT unique," +
-                    BuddyEntry.COLUMN_NAME_URL + " TEXT)";
+                    BuddyEntry.COLUMN_NAME_URL + " TEXT," +
+                    BuddyEntry.COLUMN_NAME_MESSAGE + " TEXT)";
+
 
     private static final String SQL_DELETE_BUDDY_ENTRIES =
             "DROP TABLE IF EXISTS " + BuddyEntry.TABLE_NAME;

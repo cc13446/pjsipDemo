@@ -34,7 +34,8 @@ public class BuddyDao {
         String[] projection = {
                 BaseColumns._ID,
                 BuddyEntry.COLUMN_NAME_NAME,
-                BuddyEntry.COLUMN_NAME_URL
+                BuddyEntry.COLUMN_NAME_URL,
+                BuddyEntry.COLUMN_NAME_MESSAGE
         };
 
         String sortOrder = BuddyEntry.COLUMN_NAME_NAME + " DESC";
@@ -43,7 +44,8 @@ public class BuddyDao {
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndexOrThrow(BuddyEntry.COLUMN_NAME_NAME));
             String url = cursor.getString(cursor.getColumnIndexOrThrow(BuddyEntry.COLUMN_NAME_URL));
-            buddies.add(new SipBuddy(name, url));
+            String message = cursor.getString(cursor.getColumnIndexOrThrow(BuddyEntry.COLUMN_NAME_MESSAGE));
+            buddies.add(new SipBuddy(name, url, message));
         }
         cursor.close();
         return buddies;
@@ -54,6 +56,7 @@ public class BuddyDao {
         ContentValues values = new ContentValues();
         values.put(BuddyEntry.COLUMN_NAME_NAME, sipBuddy.getBuddyName());
         values.put(BuddyEntry.COLUMN_NAME_URL, sipBuddy.getBuddyUrl());
+        values.put(BuddyEntry.COLUMN_NAME_MESSAGE, sipBuddy.getMessages());
         long newRowId = db.insert(BuddyEntry.TABLE_NAME, null, values);
     }
 
@@ -62,7 +65,8 @@ public class BuddyDao {
         String[] projection = {
                 BaseColumns._ID,
                 BuddyEntry.COLUMN_NAME_NAME,
-                BuddyEntry.COLUMN_NAME_URL
+                BuddyEntry.COLUMN_NAME_URL,
+                BuddyEntry.COLUMN_NAME_MESSAGE
         };
 
         String selection = BuddyEntry.COLUMN_NAME_NAME + " = ?";
@@ -75,7 +79,8 @@ public class BuddyDao {
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndexOrThrow(BuddyEntry.COLUMN_NAME_NAME));
             String url = cursor.getString(cursor.getColumnIndexOrThrow(BuddyEntry.COLUMN_NAME_URL));
-            buddy = new SipBuddy(name, url);
+            String message = cursor.getString(cursor.getColumnIndexOrThrow(BuddyEntry.COLUMN_NAME_MESSAGE));
+            buddy = new SipBuddy(name, url, message);
         }
         cursor.close();
         return buddy;
@@ -87,6 +92,7 @@ public class BuddyDao {
         ContentValues values = new ContentValues();
         values.put(BuddyEntry.COLUMN_NAME_NAME, sipBuddy.getBuddyName());
         values.put(BuddyEntry.COLUMN_NAME_URL, sipBuddy.getBuddyUrl());
+        values.put(BuddyEntry.COLUMN_NAME_MESSAGE, sipBuddy.getMessages());
 
         // Which row to update, based on the title
         String selection = BuddyEntry.COLUMN_NAME_NAME+ " = ?";

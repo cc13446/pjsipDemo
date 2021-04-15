@@ -2,6 +2,7 @@ package com.chenchen.android.pjsipdemo.Domain;
 
 import android.util.Log;
 
+import com.chenchen.android.pjsipdemo.Dao.BuddyDao;
 import com.chenchen.android.pjsipdemo.Logger;
 
 import org.pjsip.pjsua2.Buddy;
@@ -18,12 +19,12 @@ public class SipBuddy extends Buddy {
 
     private Boolean isRegister;
 
-    public SipBuddy(String buddyName, String buddyUrl){
+    public SipBuddy(String buddyName, String buddyUrl, String message){
         super();
         mBuddyName = buddyName;
         mBuddyUrl = buddyUrl;
         isRegister = registerBuddy();
-        mMessages = "";
+        mMessages = message;
     }
 
     @Override
@@ -43,44 +44,32 @@ public class SipBuddy extends Buddy {
 
     public void setMessages(String messages) {
         mMessages = messages;
+        BuddyDao.getInstance().ModifyBuddy(this);
     }
-    public void addMessages(String messages) {
-        mMessages = mMessages +"\n" + messages;
+    public void addMessages(String buddyName, String messages) {
+        if(mMessages.equals("")){
+            mMessages = buddyName + ": " + messages;
+        }
+        else{
+            mMessages = mMessages +"\n" + buddyName + ": " + messages;
+        }
+        BuddyDao.getInstance().ModifyBuddy(this);
     }
 
     public Boolean getRegister() {
         return isRegister;
     }
 
-    public void setRegister(Boolean register) {
-        isRegister = register;
-    }
 
     public String getBuddyName() {
         return mBuddyName;
     }
 
-    public void setBuddyName(String buddyName) {
-        mBuddyName = buddyName;
-        try {
-            getInfo().setContact(buddyName);
-        }catch (Exception e){
-            Logger.error(LOG_TAG, "setBuddyName", e);
-        }
-    }
 
     public String getBuddyUrl() {
         return mBuddyUrl;
     }
 
-    public void setBuddyUrl(String buddyUrl) {
-        mBuddyUrl = buddyUrl;
-        try {
-            getInfo().setUri(buddyUrl);
-        }catch (Exception e){
-            Logger.error(LOG_TAG, "setBuddyUrl", e);
-        }
-    }
 
     private boolean registerBuddy(){
         try {

@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.chenchen.android.pjsipdemo.Fragments.CallFragment;
 import com.chenchen.android.pjsipdemo.Fragments.BuddiesFragment;
 import com.chenchen.android.pjsipdemo.Fragments.MessagesFragment;
-import com.chenchen.android.pjsipdemo.Fragments.RecordFragment;
+import com.chenchen.android.pjsipdemo.Fragments.PushToTalkFragment;
 
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
@@ -17,7 +17,7 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
     private BuddiesFragment mBuddiesFragment = null;
     private CallFragment mCallFragment = null;
     private MessagesFragment mMessagesFragment = null;
-    private RecordFragment mRecordFragment = null;
+    private PushToTalkFragment mPushToTalkFragment = null;
 
 
 
@@ -26,7 +26,7 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         mBuddiesFragment = new BuddiesFragment();
         mCallFragment = new CallFragment();
         mMessagesFragment = new MessagesFragment();
-        mRecordFragment = new RecordFragment();
+        mPushToTalkFragment = new PushToTalkFragment();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
                 fragment = mCallFragment;
                 break;
             case DemoActivity.PAGE_RECORD:
-                fragment = mRecordFragment;
+                fragment = mPushToTalkFragment;
                 break;
         }
         return fragment;
