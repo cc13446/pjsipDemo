@@ -128,9 +128,14 @@ public class CallingVideoFragment extends Fragment {
         });
 
         setCaptureOrient(pjmedia_orient.PJMEDIA_ORIENT_ROTATE_270DEG);
-        
-        startTimer();
+
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        startTimer();
     }
 
     @Override

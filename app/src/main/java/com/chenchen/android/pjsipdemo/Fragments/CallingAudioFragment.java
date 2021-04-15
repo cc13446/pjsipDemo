@@ -92,10 +92,15 @@ public class CallingAudioFragment extends Fragment {
         louderBtn.setOnClickListener(v1 -> {
             Toast.makeText(getActivity(),"免提", Toast.LENGTH_SHORT).show();
         });
-
-        startTimer();
         return v;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        startTimer();
+    }
+
     private void startTimer() {
         //防止多次点击开启计时器
         if (timer != null) {

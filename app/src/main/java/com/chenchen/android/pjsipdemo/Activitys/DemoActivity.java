@@ -2,15 +2,21 @@ package com.chenchen.android.pjsipdemo.Activitys;
 // 主界面
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -29,6 +35,10 @@ import com.chenchen.android.pjsipdemo.R;
 import com.google.android.material.navigation.NavigationView;
 
 import org.pjsip.pjsua2.Buddy;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
 public class DemoActivity extends AppCompatActivity implements
@@ -71,6 +81,26 @@ public class DemoActivity extends AppCompatActivity implements
     private User mUser;
     private SipAccount acc;
 
+    //需要的权限
+    String[] permissions = new String[]{Manifest.permission.USE_SIP,
+            Manifest.permission.USE_SIP,
+            Manifest.permission.INTERNET,
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.MODIFY_AUDIO_SETTINGS,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.WAKE_LOCK,
+            Manifest.permission.VIBRATE,
+            Manifest.permission.ACCESS_NETWORK_STATE};
+    //哪些权限未授予
+    List<String> mPermissionList = new ArrayList<>();
+
+    AlertDialog mPermissionDialog;
+    String mPackName = "com.chenchen.android.pjsipdemo";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,13 +113,34 @@ public class DemoActivity extends AppCompatActivity implements
         bindViews();
         rb_contact.setChecked(true);
 
-        // 请求权限
-        myRequestPermissions();
 
         acc = SipAccount.getInstance();
         MyActivityManager.getManager().addActivity(this);
+
+        if (Build.VERSION.SDK_INT >= 23) {//6.0才用动态权限
+            initPermission();
+        }
+        else{
+            myRequestPermissions();
+        }
     }
 
+    private void initPermission() {
+
+        mPermissionList.clear();//清空没有通过的权限
+
+        //逐个判断你要的权限是否已经通过
+        for (int i = 0; i < permissions.length; i++) {
+            if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
+                mPermissionList.add(permissions[i]);//添加还未授予的权限
+            }
+        }
+
+        //申请权限
+        if (mPermissionList.size() > 0) {//有权限没有通过，需要申请
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_PERMISSION);
+        }
+    }
     private void bindViews() {
         rg_tab_bar = (RadioGroup) findViewById(R.id.rg_tab_bar);
         rb_contact = (RadioButton) findViewById(R.id.rb_contact);
@@ -108,7 +159,7 @@ public class DemoActivity extends AppCompatActivity implements
         drawerLayout = findViewById(R.id.DrawerLayout);
         mToolbar = findViewById(R.id.mToolBar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, mToolbar, 0, 0);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -199,6 +250,48 @@ public class DemoActivity extends AppCompatActivity implements
         }
 
     }
+    //请求权限后回调的方法
+    //参数： requestCode  是我们自己定义的权限请求码
+    //参数： permissions  是我们请求的权限名称数组
+    //参数： grantResults 是我们在弹出页面后是否允许权限的标识数组，数组的长度对应的是权限名称数组的长度，数组的数据0表示允许权限，-1表示我们点击了禁止权限
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean hasPermissionDismiss = false;//有权限没有通过
+        if (REQUEST_CODE_PERMISSION == requestCode) {
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == -1) {
+                    hasPermissionDismiss = true;
+                }
+            }
+            //如果有权限没有被允许
+            if (hasPermissionDismiss) {
+                showPermissionDialog();
+            }
+        }
+    }
+
+    private void showPermissionDialog() {
+        if (mPermissionDialog == null) {
+            mPermissionDialog = new AlertDialog.Builder(this)
+                    .setMessage("已禁用权限，请手动授予")
+                    .setPositiveButton("设置", (dialog, which) -> {
+                        cancelPermissionDialog();
+                        Uri packageURI = Uri.parse("package:" + mPackName);
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
+                        startActivity(intent);
+                    })
+                    .setNegativeButton("取消", (dialog, which) -> cancelPermissionDialog())
+                    .create();
+        }
+        mPermissionDialog.show();
+    }
+
+    //关闭对话框
+    private void cancelPermissionDialog() {
+        mPermissionDialog.cancel();
+    }
+
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
 
