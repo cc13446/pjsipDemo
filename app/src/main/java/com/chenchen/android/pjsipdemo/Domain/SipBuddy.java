@@ -20,7 +20,6 @@ public class SipBuddy extends Buddy {
     private Boolean isRegister;
 
     private Boolean isPushToTalk;
-    private SipCall mSipCall;
 
     public SipBuddy(String buddyName, String buddyUrl, String message){
         super();
@@ -42,13 +41,6 @@ public class SipBuddy extends Buddy {
         }
     }
 
-    public SipCall getSipCall() {
-        return mSipCall;
-    }
-
-    public void setSipCall(SipCall sipCall) {
-        mSipCall = sipCall;
-    }
 
     public Boolean getPushToTalk() {
         return isPushToTalk;

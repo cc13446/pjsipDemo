@@ -118,9 +118,7 @@ public class PushToTalkFragment extends Fragment {
 
             List<SipBuddy> mSipBuddies = SipBuddyList.getInstance().getSipBuddies();
             for(SipBuddy s : mSipBuddies){
-                if(s.getPushToTalk()){
-                    if(s.getPushToTalk()) PushToTalk(s);
-                }
+                if(s.getPushToTalk()) PushToTalk(s);
             }
         });
         updateUI();
@@ -130,22 +128,7 @@ public class PushToTalkFragment extends Fragment {
         if(null == sipBuddy) {
             return;
         }
-        SipCall mSipCall = sipBuddy.getSipCall();
-        if(null != mSipCall && !mSipCall.isActive()) mSipCall.delete();
-        else if(null != mSipCall && mSipCall.isActive()) return;
-        mSipCall = new SipCall(SipAccount.getInstance(), -1);
-        mSipCall.setVideoCall(false);
-        mSipCall.setPushToTalk(true);
-        sipBuddy.setSipCall(mSipCall);
-        CallOpParam prm = new CallOpParam();
 
-        //这里注意，格式  sip: 110@192.168.1.163
-        String dst_uri = "sip:" + sipBuddy.getBuddyName() + "@" + sipBuddy.getBuddyUrl();
-        try {
-            mSipCall.makeCall(dst_uri, prm);
-        } catch (Exception e) {
-            mSipCall.delete();
-        }
     }
 
     @Override

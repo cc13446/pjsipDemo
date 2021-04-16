@@ -196,53 +196,8 @@ public class SipCall extends Call {
                 handleVideoMedia(mediaInfo);
             }
         }
-        if(pushToTalk) PushToTalkConnect();
     }
 
-    public void PushToTalkConnect(){
-        List<SipBuddy> mSipBuddies = SipBuddyList.getInstance().getSipBuddies();
-        for(int i = 0; i < mSipBuddies.size(); i++){
-            SipBuddy sipBuddyI  = mSipBuddies.get(i);
-            if(!sipBuddyI.getPushToTalk()) continue;
-            for(int j = i + 1; j < mSipBuddies.size(); j++){
-                SipBuddy sipBuddyJ = mSipBuddies.get(j);
-                if(!sipBuddyJ.getPushToTalk()) continue;
-                SipCall.connect(sipBuddyI.getSipCall().getMedia(), sipBuddyJ.getSipCall().getMedia());
-            }
-        }
-    }
-
-    public AudioMedia getMedia() {
-        try {
-            CallInfo info = getInfo();
-            CallMediaInfoVector cmiv = info.getMedia();
-            for (int i = 0; i < cmiv.size(); i++) {
-                Media media = getMedia(i);
-                CallMediaInfo mediaInfo = cmiv.get(i);
-                if (mediaInfo.getType() == pjmedia_type.PJMEDIA_TYPE_AUDIO
-                        && media != null
-                        && mediaInfo.getStatus() == pjsua_call_media_status.PJSUA_CALL_MEDIA_ACTIVE) {
-                    return AudioMedia.typecastFromMedia(media);
-                }
-            }
-        } catch (Exception exc) {
-            Logger.error(LOG_TAG, "onCallMediaState: error while getting call info", exc);
-        }
-        return null;
-    }
-
-    public static void connect(AudioMedia m1, AudioMedia m2){
-        try {
-            if (m1 != null && m2 != null) {
-                m1.startTransmit(m2);
-                m2.startTransmit(m1);
-                Logger.error(LOG_TAG, "connecting others");
-            }
-        } catch (Exception exc) {
-            Logger.error(LOG_TAG, "Error while connecting audio media to sound device", exc);
-        }
-
-    }
     private void handleAudioMedia(Media media) {
         AudioMedia audioMedia = AudioMedia.typecastFromMedia(media);
 
