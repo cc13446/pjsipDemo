@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,11 +83,13 @@ public class MessageFragment extends Fragment {
         buddyName = v.findViewById(R.id.message_buddy_name);
         buddyName.setText(mSipBuddy.getBuddyName());
         messages = v.findViewById(R.id.messages);
+        messages.setMovementMethod(ScrollingMovementMethod.getInstance());
         UpdateMessages();
         messageToSend = v.findViewById(R.id.message_to_send);
         sendBtn = v.findViewById(R.id.send);
         sendBtn.setOnClickListener(v1 -> {
             String s = messageToSend.getText().toString();
+            if(s.equals("")) return;
             SendInstantMessageParam param = new SendInstantMessageParam();
             param.setContent(s);
             try {

@@ -23,6 +23,7 @@
         android:id="@+id/messages"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:scrollbars="vertical"
         android:hint="@string/message"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/bottom"
