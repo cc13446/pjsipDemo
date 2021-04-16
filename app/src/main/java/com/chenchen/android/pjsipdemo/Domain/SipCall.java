@@ -44,6 +44,7 @@ public class SipCall extends Call {
     private pjsip_role_e role = null;
 
     private boolean videoCall = false;
+    private boolean pushToTalk = false;
 
     private VideoWindow mVideoWindow;
     private VideoPreview mVideoPreview;
@@ -59,6 +60,13 @@ public class SipCall extends Call {
         return videoCall;
     }
 
+    public boolean isPushToTalk() {
+        return pushToTalk;
+    }
+
+    public void setPushToTalk(boolean pushToTalk) {
+        this.pushToTalk = pushToTalk;
+    }
 
     //电话状态回调
     @Override

@@ -3,64 +3,143 @@ package com.chenchen.android.pjsipdemo.Fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
+import com.chenchen.android.pjsipdemo.Domain.SipAccount;
+import com.chenchen.android.pjsipdemo.Domain.SipBuddy;
+import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
+import com.chenchen.android.pjsipdemo.Domain.SipCall;
+import com.chenchen.android.pjsipdemo.Logger;
+import com.chenchen.android.pjsipdemo.MyActivityManager;
 import com.chenchen.android.pjsipdemo.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PushToTalkFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import org.pjsip.pjsua2.CallOpParam;
+
+import java.util.List;
+
+
 public class PushToTalkFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private class PushToTalkHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public PushToTalkFragment() {
-        // Required empty public constructor
-    }
+        private TextView mBuddyName;
+        private TextView mBuddyState;
+        private SipBuddy mSipBuddy;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RecordFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PushToTalkFragment newInstance(String param1, String param2) {
-        PushToTalkFragment fragment = new PushToTalkFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+        private CheckBox mCheckBox;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        public PushToTalkHolder(LayoutInflater inflater, ViewGroup parent) {
+            super(inflater.inflate(R.layout.list_item_push_to_talk, parent, false));
+
+            mBuddyName = itemView.findViewById(R.id.push_buddy_name);
+            mBuddyState = itemView.findViewById(R.id.push_buddy_state);
+            mCheckBox = itemView.findViewById(R.id.checkBox);
+            mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mSipBuddy.setPushToTalk(isChecked);
+                }
+            });
+
+            itemView.setOnClickListener(this);
+        }
+
+        private void bind(SipBuddy sipBuddy) throws Exception {
+            mSipBuddy = sipBuddy;
+            mBuddyName.setText(mSipBuddy.getBuddyName());
+            mBuddyState.setText(mSipBuddy.getInfo().getPresStatus().getStatusText());
+            mCheckBox.setChecked(mSipBuddy.getPushToTalk());
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 
+    private class PushToTalkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        private final String LOG_TAG = PushToTalkFragment.PushToTalkAdapter.class.getSimpleName();
+
+        private List<SipBuddy> mSipBuddies;
+
+
+        public PushToTalkAdapter(List<SipBuddy> sipBuddies) {
+            mSipBuddies = sipBuddies;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+
+            return new PushToTalkFragment.PushToTalkHolder(layoutInflater, parent);
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            try {
+                ((PushToTalkFragment.PushToTalkHolder)holder).bind(mSipBuddies.get(position));
+            } catch (Exception e) {
+                Logger.error(LOG_TAG, "onBindViewHolder: ", e);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return mSipBuddies.size();
+        }
+    }
+
+    private RecyclerView mCrimeRecyclerView;
+    private PushToTalkFragment.PushToTalkAdapter mAdapter;
+    private Button mPushToTalkBtn;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_push_to_talk, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        View view = inflater.inflate(R.layout.fragment_push_to_talk, container, false);
+        mCrimeRecyclerView = view.findViewById(R.id.push_to_talk_recycler_view);
+        mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mPushToTalkBtn = view.findViewById(R.id.push_to_talk_btn);
+        mPushToTalkBtn.setOnClickListener(v1->{
+
+            List<SipBuddy> mSipBuddies = SipBuddyList.getInstance().getSipBuddies();
+            for(SipBuddy s : mSipBuddies){
+                if(s.getPushToTalk()){
+                    Toast.makeText(getActivity(), "PUAH" + s.getBuddyName(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        updateUI();
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    private void updateUI(){
+        SipBuddyList sipBuddyList = SipBuddyList.getInstance();
+        List<SipBuddy> mSipBuddies = sipBuddyList.getSipBuddies();
+        if(mAdapter == null){
+            mAdapter = new PushToTalkFragment.PushToTalkAdapter(mSipBuddies);
+        }
+        mCrimeRecyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
     }
 }

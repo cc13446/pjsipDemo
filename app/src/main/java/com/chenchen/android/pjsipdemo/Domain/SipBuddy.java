@@ -19,12 +19,16 @@ public class SipBuddy extends Buddy {
 
     private Boolean isRegister;
 
+    private Boolean isPushToTalk;
+    private SipCall mSipCall;
+
     public SipBuddy(String buddyName, String buddyUrl, String message){
         super();
         mBuddyName = buddyName;
         mBuddyUrl = buddyUrl;
         isRegister = registerBuddy();
         mMessages = message;
+        isPushToTalk = false;
     }
 
     @Override
@@ -36,6 +40,22 @@ public class SipBuddy extends Buddy {
         }catch (Exception e){
             Logger.error(LOG_TAG, "onBuddyState:", e);
         }
+    }
+
+    public SipCall getSipCall() {
+        return mSipCall;
+    }
+
+    public void setSipCall(SipCall sipCall) {
+        mSipCall = sipCall;
+    }
+
+    public Boolean getPushToTalk() {
+        return isPushToTalk;
+    }
+
+    public void setPushToTalk(Boolean pushToTalk) {
+        isPushToTalk = pushToTalk;
     }
 
     public String getMessages() {
