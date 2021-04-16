@@ -25,6 +25,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.chenchen.android.pjsipdemo.Domain.SipAccount;
+import com.chenchen.android.pjsipdemo.Domain.SipBuddy;
+import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
 import com.chenchen.android.pjsipdemo.Domain.SipCall;
 import com.chenchen.android.pjsipdemo.Domain.User;
 import com.chenchen.android.pjsipdemo.Logger;
@@ -414,6 +416,7 @@ public class DemoActivity extends AppCompatActivity implements
         MyActivityManager.getManager().finishActivity(CallInActivity.class);
 
         Intent intent;
+        if(null == acc.getCall()) return;
         if(!acc.getCall().getVideoCall()){
             intent = CallingAudioActivity.newIntent(this, "Call From " + contactName);
         }
@@ -431,6 +434,7 @@ public class DemoActivity extends AppCompatActivity implements
         MyActivityManager.getManager().finishActivity(CallOutActivity.class);
         MyActivityManager.getManager().finishActivity(CallInActivity.class);
         Intent intent;
+        if(null == acc.getCall()) return;
         if(!acc.getCall().getVideoCall()){
             intent = CallingAudioActivity.newIntent(this, "Call To " + contactName);
         }
@@ -455,7 +459,6 @@ public class DemoActivity extends AppCompatActivity implements
     @Override
     public void connecting() {
         Logger.error(LOG_TAG, "connecting");
-
     }
 
     @Override
