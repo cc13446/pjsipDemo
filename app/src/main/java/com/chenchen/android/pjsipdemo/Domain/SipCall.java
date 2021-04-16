@@ -196,7 +196,7 @@ public class SipCall extends Call {
                 handleVideoMedia(mediaInfo);
             }
         }
-       PushToTalkConnect();
+        if(pushToTalk) PushToTalkConnect();
     }
 
     public void PushToTalkConnect(){
