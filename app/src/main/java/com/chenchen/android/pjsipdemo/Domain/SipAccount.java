@@ -4,11 +4,16 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
+import com.chenchen.android.pjsipdemo.Dao.DBReaderContract;
 import com.chenchen.android.pjsipdemo.DemoApplication;
+import com.chenchen.android.pjsipdemo.Fragments.PushToTalkFragment;
 import com.chenchen.android.pjsipdemo.Interfaces.OnPJSipRegStateListener;
+import com.chenchen.android.pjsipdemo.JsonCommend;
 import com.chenchen.android.pjsipdemo.Logger;
 import com.chenchen.android.pjsipdemo.MyActivityManager;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.AccountConfig;
 import org.pjsip.pjsua2.AuthCredInfo;
@@ -17,6 +22,8 @@ import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnInstantMessageParam;
 import org.pjsip.pjsua2.OnRegStateParam;
 import org.pjsip.pjsua2.pj_qos_type;
+
+import java.util.ServiceConfigurationError;
 
 
 public class SipAccount extends Account {
@@ -110,6 +117,30 @@ public class SipAccount extends Account {
     @Override
     public  void onInstantMessage(OnInstantMessageParam prm){
         String msgBody = prm.getMsgBody();
+
+        if("/".equals(msgBody.substring(0, 1)) && msgBody.contains(JsonCommend.BROADCAST_LAUNCH)){
+            String s = msgBody.substring(JsonCommend.BROADCAST_LAUNCH.length());
+            try{
+                JSONObject data = new JSONObject(s);
+                JSONArray buddies = data.getJSONArray(DBReaderContract.BuddyEntry.TABLE_NAME);
+                Setting.getInstance(DemoApplication.getInstance().getApplicationContext()).setConferencesNumber(data.getString(JsonCommend.CONFERENCES_NUMBER));
+                for (int i = 0; i < buddies.length(); i++) {
+                    JSONObject buddy = buddies.getJSONObject(i);
+                    String name = buddy.getString(DBReaderContract.BuddyEntry.COLUMN_NAME_NAME);
+                    String url = buddy.getString(DBReaderContract.BuddyEntry.COLUMN_NAME_URL);
+                    if(User.getInstance(DemoApplication.getInstance().getApplicationContext()).getUserName().equals(name)){
+                        continue;
+                    }
+                    SipBuddyList.getInstance().addSipBuddy(name, url);
+                    SipBuddy sipBuddy = SipBuddyList.getInstance().getSipBuddy(name);
+                    sipBuddy.setPushToTalk(true);
+                }
+            }catch (Exception e){
+                Logger.error(LOG_TAG, "json", e);
+            }
+            SipCall.PushToTalkCall();
+        }
+
         String fromUri = prm.getFromUri();
         String buddyName = fromUri.substring(fromUri.indexOf(':') + 1, fromUri.indexOf("@"));
         String buddyUrl = fromUri.substring(fromUri.indexOf('@') + 1, fromUri.indexOf(">"));

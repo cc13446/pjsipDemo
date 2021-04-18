@@ -8,6 +8,7 @@ import com.chenchen.android.pjsipdemo.Logger;
 import org.pjsip.pjsua2.Buddy;
 import org.pjsip.pjsua2.BuddyConfig;
 import org.pjsip.pjsua2.BuddyInfo;
+import org.pjsip.pjsua2.SendInstantMessageParam;
 
 public class SipBuddy extends Buddy {
 
@@ -93,6 +94,18 @@ public class SipBuddy extends Buddy {
         }catch (Exception e){
             Logger.error(LOG_TAG, "addSipBuddy", e);
             return false;
+        }
+    }
+
+    public void sendIM(String s){
+        if(s.equals("")) return;
+        SendInstantMessageParam param = new SendInstantMessageParam();
+        param.setContent(s);
+        try {
+            sendInstantMessage(param);
+            addMessages("Me",s);
+        }catch (Exception e){
+            Logger.error(LOG_TAG, "sendInstantMessage", e);
         }
     }
 }

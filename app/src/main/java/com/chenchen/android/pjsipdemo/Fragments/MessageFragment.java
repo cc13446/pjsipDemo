@@ -89,17 +89,9 @@ public class MessageFragment extends Fragment {
         sendBtn = v.findViewById(R.id.send);
         sendBtn.setOnClickListener(v1 -> {
             String s = messageToSend.getText().toString();
-            if(s.equals("")) return;
-            SendInstantMessageParam param = new SendInstantMessageParam();
-            param.setContent(s);
-            try {
-                mSipBuddy.sendInstantMessage(param);
-                mSipBuddy.addMessages("Me",s);
-                UpdateMessages();
-                messageToSend.setText("");
-            }catch (Exception e){
-                Logger.error(LOG_TAG, "sendInstantMessage", e);
-            }
+            mSipBuddy.sendIM(s);
+            UpdateMessages();
+            messageToSend.setText("");
         });
 
         View root = v.findViewById(R.id.root);

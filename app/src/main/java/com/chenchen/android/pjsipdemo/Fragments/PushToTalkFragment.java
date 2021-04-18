@@ -19,17 +19,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
+import com.chenchen.android.pjsipdemo.Dao.DBReaderContract;
+import com.chenchen.android.pjsipdemo.DemoApplication;
+import com.chenchen.android.pjsipdemo.Domain.Setting;
 import com.chenchen.android.pjsipdemo.Domain.SipAccount;
 import com.chenchen.android.pjsipdemo.Domain.SipBuddy;
 import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
 import com.chenchen.android.pjsipdemo.Domain.SipCall;
+import com.chenchen.android.pjsipdemo.Domain.User;
+import com.chenchen.android.pjsipdemo.JsonCommend;
 import com.chenchen.android.pjsipdemo.Logger;
 import com.chenchen.android.pjsipdemo.MyActivityManager;
 import com.chenchen.android.pjsipdemo.R;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.pjsip.pjsua2.Buddy;
 import org.pjsip.pjsua2.CallOpParam;
 
 import java.util.List;
+
+import static com.chenchen.android.pjsipdemo.JsonCommend.CONFERENCES_NUMBER;
 
 
 public class PushToTalkFragment extends Fragment {
@@ -108,6 +118,8 @@ public class PushToTalkFragment extends Fragment {
     private RecyclerView mCrimeRecyclerView;
     private PushToTalkFragment.PushToTalkAdapter mAdapter;
     private Button mPushToTalkBtn;
+
+    private static final String LOG_TAG = PushToTalkFragment.class.getSimpleName();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_push_to_talk, container, false);
@@ -117,20 +129,37 @@ public class PushToTalkFragment extends Fragment {
         mPushToTalkBtn.setOnClickListener(v1->{
 
             List<SipBuddy> mSipBuddies = SipBuddyList.getInstance().getSipBuddies();
-            for(SipBuddy s : mSipBuddies){
-                if(s.getPushToTalk()) PushToTalk(s);
+            JSONArray buddies = new JSONArray();
+            try{
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(DBReaderContract.BuddyEntry.COLUMN_NAME_NAME, User.getInstance(getActivity()).getUserName());
+                jsonObject.put(DBReaderContract.BuddyEntry.COLUMN_NAME_URL, User.getInstance(getActivity()).getUrl());
+                buddies.put(jsonObject);
+                for(SipBuddy s : mSipBuddies){
+                    if(s.getPushToTalk()) {
+                        jsonObject = new JSONObject();
+                        jsonObject.put(DBReaderContract.BuddyEntry.COLUMN_NAME_NAME, s.getBuddyName());
+                        jsonObject.put(DBReaderContract.BuddyEntry.COLUMN_NAME_URL, s.getBuddyUrl());
+                        buddies.put(jsonObject);
+                    }
+                }
+                JSONObject data = new JSONObject();
+                data.put(DBReaderContract.BuddyEntry.TABLE_NAME, buddies);
+                data.put(CONFERENCES_NUMBER, Setting.getInstance(getActivity()).getConferencesNumber());
+                for(SipBuddy s : mSipBuddies){
+                    if(s.getPushToTalk()) {
+                        s.sendIM(JsonCommend.BROADCAST_LAUNCH + data.toString());
+                    }
+                }
+            }catch (Exception e){
+                Logger.error(LOG_TAG, "JSON", e);
             }
-            ((DemoActivity)MyActivityManager.getManager().findActivity(DemoActivity.class)).startPushToTalkingActivity();
+            SipCall.PushToTalkCall();
         });
         updateUI();
         return view;
     }
-    private void PushToTalk(SipBuddy sipBuddy){
-        if(null == sipBuddy) {
-            return;
-        }
 
-    }
 
     @Override
     public void onResume() {

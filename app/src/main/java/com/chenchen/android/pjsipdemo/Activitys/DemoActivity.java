@@ -24,8 +24,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.chenchen.android.pjsipdemo.Domain.SipAccount;
+import com.chenchen.android.pjsipdemo.Domain.SipBuddy;
+import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
 import com.chenchen.android.pjsipdemo.Domain.SipCall;
 import com.chenchen.android.pjsipdemo.Domain.User;
+import com.chenchen.android.pjsipdemo.Fragments.PushToTalkFragment;
 import com.chenchen.android.pjsipdemo.Logger;
 import com.chenchen.android.pjsipdemo.MyActivityManager;
 import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
@@ -264,6 +267,10 @@ public class DemoActivity extends AppCompatActivity implements
                     sipCall.hangUp();
                 }
             }
+            List<SipBuddy> buddies = SipBuddyList.getInstance().getSipBuddies();
+            for(SipBuddy s : buddies){
+                s.setPushToTalk(false);
+            }
         }
     }
     //请求权限后回调的方法
@@ -431,16 +438,9 @@ public class DemoActivity extends AppCompatActivity implements
         startActivityForResult(MessageActivity.newIntent(this, buddyInfo), REQUEST_CODE_MESSAGE);
     }
 
-    // OnCallstateListener
-    @Override
-    public void callingIn(String contactName) {
-        Logger.error(LOG_TAG, "CallingIn");
-        myRequestPermissions();
-        MyActivityManager.getManager().finishActivity(CallOutActivity.class);
-        MyActivityManager.getManager().finishActivity(CallInActivity.class);
-
+    // 启动callingIn activity
+    public void startcallingInActivity(String contactName){
         Intent intent;
-        if(null == acc.getCall()) return;
         if(!acc.getCall().getVideoCall()){
             intent = CallingAudioActivity.newIntent(this, "Call From " + contactName);
         }
@@ -448,17 +448,11 @@ public class DemoActivity extends AppCompatActivity implements
             intent = CallingVideoActivity.newIntent(this, "Call From " + contactName);
         }
         startActivityForResult(intent, REQUEST_CODE_CALLING);
-
     }
 
-    @Override
-    public void callingOut(String contactName) {
-        Logger.error(LOG_TAG, "CallingOut");
-        myRequestPermissions();
-        MyActivityManager.getManager().finishActivity(CallOutActivity.class);
-        MyActivityManager.getManager().finishActivity(CallInActivity.class);
+    // 启动callingOut activity
+    public void startcallingOutActivity(String contactName){
         Intent intent;
-        if(null == acc.getCall()) return;
         if(!acc.getCall().getVideoCall()){
             intent = CallingAudioActivity.newIntent(this, "Call To " + contactName);
         }
@@ -468,11 +462,46 @@ public class DemoActivity extends AppCompatActivity implements
         startActivityForResult(intent, REQUEST_CODE_CALLING);
     }
 
+    // OnCallstateListener
+    @Override
+    public void callingIn(String contactName) {
+        Logger.error(LOG_TAG, "CallingIn");
+        myRequestPermissions();
+        MyActivityManager.getManager().finishActivity(CallOutActivity.class);
+        MyActivityManager.getManager().finishActivity(CallInActivity.class);
+        if(null != acc.getCall()){
+            SipCall sipCall = acc.getCall();
+            if(!sipCall.isPushToTalk()){
+                startcallingInActivity(contactName);
+            }
+        }
+    }
+
+    @Override
+    public void callingOut(String contactName) {
+        Logger.error(LOG_TAG, "CallingOut");
+        myRequestPermissions();
+        MyActivityManager.getManager().finishActivity(CallOutActivity.class);
+        MyActivityManager.getManager().finishActivity(CallInActivity.class);
+
+        if(null != acc.getCall()){
+            SipCall sipCall = acc.getCall();
+            if(!sipCall.isPushToTalk()){
+                startcallingOutActivity(contactName);
+            }
+            else{
+                startPushToTalkingActivity();
+            }
+        }
+    }
+
     @Override
     public void callOut(String contactName) {
         Logger.error(LOG_TAG, "CallOut");
-        Intent intent = CallOutActivity.newIntent(this,"Call To " + contactName);
-        startActivityForResult(intent, REQUEST_CODE_CALLOUT);
+        if(!acc.getCall().isPushToTalk()){
+            Intent intent = CallOutActivity.newIntent(this,"Call To " + contactName);
+            startActivityForResult(intent, REQUEST_CODE_CALLOUT);
+        }
     }
 
     @Override
@@ -497,6 +526,7 @@ public class DemoActivity extends AppCompatActivity implements
         MyActivityManager.getManager().finishActivity(CallInActivity.class);
         MyActivityManager.getManager().finishActivity(CallingAudioActivity.class);
         MyActivityManager.getManager().finishActivity(CallingVideoActivity.class);
+        MyActivityManager.getManager().finishActivity(PushtoTalkingActivity.class);
     }
 
     @Override

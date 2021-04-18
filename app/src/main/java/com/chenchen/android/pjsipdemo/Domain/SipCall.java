@@ -294,4 +294,27 @@ public class SipCall extends Call {
             }
         }
     }
+
+    public static void PushToTalkCall(){
+        SipAccount acc = SipAccount.getInstance();
+        if(null == acc) {
+            return;
+        }
+        SipCall mSipCall = acc.getCall();
+        if(null != mSipCall && !mSipCall.isActive()) mSipCall.delete();
+        else if(null != mSipCall && mSipCall.isActive()) return;
+        mSipCall = new SipCall(acc, -1);
+        mSipCall.setVideoCall(false);
+        mSipCall.setPushToTalk(true);
+        acc.setCall(mSipCall);
+        CallOpParam prm = new CallOpParam();
+        DemoActivity activity = (DemoActivity)MyActivityManager.getManager().findActivity(DemoActivity.class);
+        //这里注意，格式  sip: 110@192.168.1.163
+        String dst_uri = "sip:" + Setting.getInstance(activity).getConferencesNumber() + "@" + User.getInstance(activity).getUrl();
+        try {
+            mSipCall.makeCall(dst_uri, prm);
+        } catch (Exception e) {
+            mSipCall.delete();
+        }
+    }
 }
