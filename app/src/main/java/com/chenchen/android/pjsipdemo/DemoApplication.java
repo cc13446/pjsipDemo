@@ -3,6 +3,7 @@ package com.chenchen.android.pjsipdemo;
 import android.app.Application;
 
 import com.chenchen.android.pjsipdemo.Dao.DataBaseHelper;
+import com.chenchen.android.pjsipdemo.Domain.Setting;
 import com.chenchen.android.pjsipdemo.Domain.SipAccount;
 import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
 import com.chenchen.android.pjsipdemo.Domain.SipEndPoint;
@@ -11,6 +12,7 @@ import com.chenchen.android.pjsipdemo.Domain.User;
 public class DemoApplication extends Application {
 
     private User mUser;
+    private Setting mSetting;
     private SipEndPoint mSipEndPoint;
     private SipAccount mSipAccount;
     private MyActivityManager mMyActivityManager;
@@ -39,6 +41,7 @@ public class DemoApplication extends Application {
         demoApplication = this;
         // 单例初始化
         mUser = User.getInstance(this);
+        mSetting = Setting.getInstance(this);
         mMyActivityManager = MyActivityManager.getManager();
         mSipEndPoint = SipEndPoint.getInstance();
         mSipEndPoint.init();

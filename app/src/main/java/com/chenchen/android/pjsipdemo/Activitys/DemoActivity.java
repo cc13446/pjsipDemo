@@ -2,7 +2,6 @@ package com.chenchen.android.pjsipdemo.Activitys;
 // 主界面
 import android.Manifest;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -25,8 +24,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.chenchen.android.pjsipdemo.Domain.SipAccount;
-import com.chenchen.android.pjsipdemo.Domain.SipBuddy;
-import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
 import com.chenchen.android.pjsipdemo.Domain.SipCall;
 import com.chenchen.android.pjsipdemo.Domain.User;
 import com.chenchen.android.pjsipdemo.Logger;
@@ -35,8 +32,6 @@ import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
 import com.chenchen.android.pjsipdemo.Interfaces.OnPJSipRegStateListener;
 import com.chenchen.android.pjsipdemo.R;
 import com.google.android.material.navigation.NavigationView;
-
-import org.pjsip.pjsua2.Buddy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +57,9 @@ public class DemoActivity extends AppCompatActivity implements
     public static final int REQUEST_CODE_CALLIN = 3;
     public static final int REQUEST_CODE_CALLOUT = 4;
     public static final int REQUEST_CODE_BUDDY = 5;
-    public static final int REQUEST_CODE_Message = 6;
+    public static final int REQUEST_CODE_MESSAGE = 6;
+    public static final int REQUEST_CODE_SETTING = 7;
+    public static final int REQUEST_CODE_PUSH_TO_TALKING = 8;
 
     //UI Objects
     private Toolbar mToolbar;
@@ -181,7 +178,7 @@ public class DemoActivity extends AppCompatActivity implements
                     startUserActivity();
                     break;
                 case R.id.navigation_item_setting:
-                    Toast.makeText(this, "setting", Toast.LENGTH_SHORT).show();
+                    startSettingActivity();
                     break;
                 case R.id.navigation_item_exit:
                     this.finish();
@@ -208,6 +205,15 @@ public class DemoActivity extends AppCompatActivity implements
             }
             else{
                 Toast.makeText(this, "修改用户失败", Toast.LENGTH_SHORT).show();
+            }
+        }
+        // Setting Activity
+        else if(REQUEST_CODE_SETTING == requestCode){
+            if (Activity.RESULT_OK == resultCode) {
+                Toast.makeText(this, "修改设置成功", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this, "修改设置失败", Toast.LENGTH_SHORT).show();
             }
         }
         // buddyActivity
@@ -250,7 +256,15 @@ public class DemoActivity extends AppCompatActivity implements
                 }
             }
         }
-
+        // Push To talking
+        else if(REQUEST_CODE_PUSH_TO_TALKING == requestCode){
+            SipCall sipCall = acc.getCall();
+            if(Activity.RESULT_FIRST_USER == resultCode){
+                if(null != sipCall && sipCall.isActive()){
+                    sipCall.hangUp();
+                }
+            }
+        }
     }
     //请求权限后回调的方法
     //参数： requestCode  是我们自己定义的权限请求码
@@ -397,6 +411,16 @@ public class DemoActivity extends AppCompatActivity implements
         startActivityForResult(UserActivity.newIntent(this), REQUEST_CODE_USER);
     }
 
+    // 启动setting activity
+    public void startSettingActivity(){
+        startActivityForResult(SettingActivity.newIntent(this), REQUEST_CODE_SETTING);
+    }
+
+    // 启动对讲 activity
+    public void startPushToTalkingActivity(){
+        startActivityForResult(PushtoTalkingActivity.newIntent(this), REQUEST_CODE_PUSH_TO_TALKING);
+    }
+
     // 启动buddy activity
     public void startBuddyActivity(String buddyInfo){
         startActivityForResult(BuddyActivity.newIntent(this, buddyInfo), REQUEST_CODE_BUDDY);
@@ -404,7 +428,7 @@ public class DemoActivity extends AppCompatActivity implements
 
     // 启动message activity
     public void startMessageActivity(String buddyInfo){
-        startActivityForResult(MessageActivity.newIntent(this, buddyInfo), REQUEST_CODE_Message);
+        startActivityForResult(MessageActivity.newIntent(this, buddyInfo), REQUEST_CODE_MESSAGE);
     }
 
     // OnCallstateListener

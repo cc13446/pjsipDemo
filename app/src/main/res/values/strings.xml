@@ -37,4 +37,6 @@
     <string name="send">发送</string>
     <string name="contact_info">Contact Info</string>
     <string name="push_to_talk">Push To Talk</string>
+    <string name="conferences_number">Conferences Number</string>
+    <string name="talk">TALK</string>
 </resources>

@@ -120,6 +120,7 @@ public class PushToTalkFragment extends Fragment {
             for(SipBuddy s : mSipBuddies){
                 if(s.getPushToTalk()) PushToTalk(s);
             }
+            ((DemoActivity)MyActivityManager.getManager().findActivity(DemoActivity.class)).startPushToTalkingActivity();
         });
         updateUI();
         return view;
