@@ -4,11 +4,11 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
+import com.chenchen.android.pjsipdemo.Activitys.PushToTalkingActivity;
 import com.chenchen.android.pjsipdemo.Dao.DBReaderContract;
 import com.chenchen.android.pjsipdemo.DemoApplication;
-import com.chenchen.android.pjsipdemo.Fragments.PushToTalkFragment;
 import com.chenchen.android.pjsipdemo.Interfaces.OnPJSipRegStateListener;
-import com.chenchen.android.pjsipdemo.JsonCommend;
+import com.chenchen.android.pjsipdemo.JsonCommand;
 import com.chenchen.android.pjsipdemo.Logger;
 import com.chenchen.android.pjsipdemo.MyActivityManager;
 
@@ -22,8 +22,6 @@ import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnInstantMessageParam;
 import org.pjsip.pjsua2.OnRegStateParam;
 import org.pjsip.pjsua2.pj_qos_type;
-
-import java.util.ServiceConfigurationError;
 
 
 public class SipAccount extends Account {
@@ -115,15 +113,15 @@ public class SipAccount extends Account {
     }
 
     @Override
-    public  void onInstantMessage(OnInstantMessageParam prm){
+    public void onInstantMessage(OnInstantMessageParam prm){
         String msgBody = prm.getMsgBody();
 
-        if("/".equals(msgBody.substring(0, 1)) && msgBody.contains(JsonCommend.BROADCAST_LAUNCH)){
-            String s = msgBody.substring(JsonCommend.BROADCAST_LAUNCH.length());
+        if("/".equals(msgBody.substring(0, 1)) && msgBody.contains(JsonCommand.BROADCAST_LAUNCH)){
+            String s = msgBody.substring(JsonCommand.BROADCAST_LAUNCH.length());
             try{
                 JSONObject data = new JSONObject(s);
                 JSONArray buddies = data.getJSONArray(DBReaderContract.BuddyEntry.TABLE_NAME);
-                Setting.getInstance(DemoApplication.getInstance().getApplicationContext()).setConferencesNumber(data.getString(JsonCommend.CONFERENCES_NUMBER));
+                Setting.getInstance(DemoApplication.getInstance().getApplicationContext()).setConferencesNumber(data.getString(JsonCommand.CONFERENCES_NUMBER));
                 for (int i = 0; i < buddies.length(); i++) {
                     JSONObject buddy = buddies.getJSONObject(i);
                     String name = buddy.getString(DBReaderContract.BuddyEntry.COLUMN_NAME_NAME);
@@ -139,6 +137,21 @@ public class SipAccount extends Account {
                 Logger.error(LOG_TAG, "json", e);
             }
             SipCall.PushToTalkCall();
+            return;
+        }
+        if("/".equals(msgBody.substring(0, 1)) && msgBody.contains(JsonCommand.BROADCAST_NOT_MUTE)){
+            PushToTalkingActivity activity = (PushToTalkingActivity) MyActivityManager.getManager().findActivity(PushToTalkingActivity.class);
+            if(null != activity && null != activity.getPushToTalkingFragment()){
+                activity.getPushToTalkingFragment().setTalkEnable(true);
+            }
+            return;
+        }
+        if("/".equals(msgBody.substring(0, 1)) && msgBody.contains(JsonCommand.BROADCAST_MUTE)){
+            PushToTalkingActivity activity = (PushToTalkingActivity) MyActivityManager.getManager().findActivity(PushToTalkingActivity.class);
+            if(null != activity && null != activity.getPushToTalkingFragment()){
+                activity.getPushToTalkingFragment().setTalkEnable(false);
+            }
+            return;
         }
 
         String fromUri = prm.getFromUri();

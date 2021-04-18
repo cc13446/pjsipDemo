@@ -97,13 +97,15 @@ public class SipBuddy extends Buddy {
         }
     }
 
-    public void sendIM(String s){
+    public void sendIM(String s, boolean json){
         if(s.equals("")) return;
         SendInstantMessageParam param = new SendInstantMessageParam();
         param.setContent(s);
         try {
             sendInstantMessage(param);
-            addMessages("Me",s);
+            if(!json){
+                addMessages("Me",s);
+            }
         }catch (Exception e){
             Logger.error(LOG_TAG, "sendInstantMessage", e);
         }

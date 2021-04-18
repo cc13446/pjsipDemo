@@ -28,7 +28,6 @@ import com.chenchen.android.pjsipdemo.Domain.SipBuddy;
 import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
 import com.chenchen.android.pjsipdemo.Domain.SipCall;
 import com.chenchen.android.pjsipdemo.Domain.User;
-import com.chenchen.android.pjsipdemo.Fragments.PushToTalkFragment;
 import com.chenchen.android.pjsipdemo.Logger;
 import com.chenchen.android.pjsipdemo.MyActivityManager;
 import com.chenchen.android.pjsipdemo.Interfaces.OnCallStateListener;
@@ -425,7 +424,7 @@ public class DemoActivity extends AppCompatActivity implements
 
     // 启动对讲 activity
     public void startPushToTalkingActivity(){
-        startActivityForResult(PushtoTalkingActivity.newIntent(this), REQUEST_CODE_PUSH_TO_TALKING);
+        startActivityForResult(PushToTalkingActivity.newIntent(this), REQUEST_CODE_PUSH_TO_TALKING);
     }
 
     // 启动buddy activity
@@ -526,7 +525,7 @@ public class DemoActivity extends AppCompatActivity implements
         MyActivityManager.getManager().finishActivity(CallInActivity.class);
         MyActivityManager.getManager().finishActivity(CallingAudioActivity.class);
         MyActivityManager.getManager().finishActivity(CallingVideoActivity.class);
-        MyActivityManager.getManager().finishActivity(PushtoTalkingActivity.class);
+        MyActivityManager.getManager().finishActivity(PushToTalkingActivity.class);
     }
 
     @Override

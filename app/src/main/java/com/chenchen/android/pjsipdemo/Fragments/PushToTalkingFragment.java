@@ -1,5 +1,6 @@
 package com.chenchen.android.pjsipdemo.Fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,8 +21,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chenchen.android.pjsipdemo.Domain.Setting;
+import com.chenchen.android.pjsipdemo.Domain.SipAccount;
+import com.chenchen.android.pjsipdemo.Domain.SipBuddy;
+import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
+import com.chenchen.android.pjsipdemo.JsonCommand;
 import com.chenchen.android.pjsipdemo.R;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -90,10 +97,37 @@ public class PushToTalkingFragment  extends Fragment {
             getActivity().finish();
         });
 
-        talkBtn.setOnClickListener(v1 -> {
-            Toast.makeText(getActivity(),"免提", Toast.LENGTH_SHORT).show();
+        talkBtn.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                List<SipBuddy> mSipBuddies = SipBuddyList.getInstance().getSipBuddies();
+                int action = event.getAction();
+                if (action == MotionEvent.ACTION_DOWN) {
+                    SipAccount.getInstance().getCall().MuteMicrophone(false);
+                    for(SipBuddy s : mSipBuddies){
+                        if(s.getPushToTalk()) {
+                            s.sendIM(JsonCommand.BROADCAST_MUTE, true);
+                        }
+                    }
+                }
+                else if (action == MotionEvent.ACTION_UP) {
+                    SipAccount.getInstance().getCall().MuteMicrophone(true);
+                    for(SipBuddy s : mSipBuddies){
+                        if(s.getPushToTalk()) {
+                            s.sendIM(JsonCommand.BROADCAST_NOT_MUTE, true);
+                        }
+                    }
+                }
+                return false;
+            }
         });
         return v;
+    }
+
+    public void setTalkEnable(boolean able){
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(() -> talkBtn.setEnabled(able));
     }
 
     @Override

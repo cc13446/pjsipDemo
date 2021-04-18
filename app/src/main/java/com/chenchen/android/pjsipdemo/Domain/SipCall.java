@@ -198,6 +198,38 @@ public class SipCall extends Call {
         }
     }
 
+    public void MuteMicrophone(boolean mute){
+        CallInfo info;
+        try {
+            info = getInfo();
+            CallMediaInfoVector cmiv = info.getMedia();
+            for (int i = 0; i < cmiv.size(); i++) {
+                Media media = getMedia(i);
+                CallMediaInfo mediaInfo = cmiv.get(i);
+
+                if (mediaInfo.getType() == pjmedia_type.PJMEDIA_TYPE_AUDIO
+                        && media != null
+                        && mediaInfo.getStatus() == pjsua_call_media_status.PJSUA_CALL_MEDIA_ACTIVE) {
+                    AudioMedia audioMedia = AudioMedia.typecastFromMedia(media);
+                    // connect the call audio media to sound device
+                    if (audioMedia != null) {
+                        AudDevManager mgr = SipEndPoint.getInstance().audDevManager();
+                        audioMedia.startTransmit(mgr.getPlaybackDevMedia());
+                        if(!mute){
+                            mgr.getCaptureDevMedia().startTransmit(audioMedia);
+                        }
+                        else{
+                            mgr.getCaptureDevMedia().stopTransmit(audioMedia);
+                        }
+                    }
+
+                }
+            }
+        } catch (Exception exc) {
+            Logger.error(LOG_TAG, "MuteMicrophone: error while getting call info", exc);
+        }
+    }
+
     private void handleAudioMedia(Media media) {
         AudioMedia audioMedia = AudioMedia.typecastFromMedia(media);
 
@@ -205,8 +237,14 @@ public class SipCall extends Call {
         try {
             if (audioMedia != null) {
                 AudDevManager mgr = SipEndPoint.getInstance().audDevManager();
-                mgr.getCaptureDevMedia().startTransmit(audioMedia);
+
                 audioMedia.startTransmit(mgr.getPlaybackDevMedia());
+                if(!pushToTalk){
+                    mgr.getCaptureDevMedia().startTransmit(audioMedia);
+                }
+                else{
+                    mgr.getCaptureDevMedia().stopTransmit(audioMedia);
+                }
             }
         } catch (Exception exc) {
             Logger.error(LOG_TAG, "Error while connecting audio media to sound device", exc);

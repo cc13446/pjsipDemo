@@ -89,7 +89,7 @@ public class MessageFragment extends Fragment {
         sendBtn = v.findViewById(R.id.send);
         sendBtn.setOnClickListener(v1 -> {
             String s = messageToSend.getText().toString();
-            mSipBuddy.sendIM(s);
+            mSipBuddy.sendIM(s, false);
             UpdateMessages();
             messageToSend.setText("");
         });

@@ -7,39 +7,29 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.chenchen.android.pjsipdemo.Activitys.DemoActivity;
 import com.chenchen.android.pjsipdemo.Dao.DBReaderContract;
-import com.chenchen.android.pjsipdemo.DemoApplication;
 import com.chenchen.android.pjsipdemo.Domain.Setting;
-import com.chenchen.android.pjsipdemo.Domain.SipAccount;
 import com.chenchen.android.pjsipdemo.Domain.SipBuddy;
 import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
 import com.chenchen.android.pjsipdemo.Domain.SipCall;
 import com.chenchen.android.pjsipdemo.Domain.User;
-import com.chenchen.android.pjsipdemo.JsonCommend;
+import com.chenchen.android.pjsipdemo.JsonCommand;
 import com.chenchen.android.pjsipdemo.Logger;
-import com.chenchen.android.pjsipdemo.MyActivityManager;
 import com.chenchen.android.pjsipdemo.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.pjsip.pjsua2.Buddy;
-import org.pjsip.pjsua2.CallOpParam;
 
 import java.util.List;
 
-import static com.chenchen.android.pjsipdemo.JsonCommend.CONFERENCES_NUMBER;
+import static com.chenchen.android.pjsipdemo.JsonCommand.CONFERENCES_NUMBER;
 
 
 public class PushToTalkFragment extends Fragment {
@@ -148,7 +138,7 @@ public class PushToTalkFragment extends Fragment {
                 data.put(CONFERENCES_NUMBER, Setting.getInstance(getActivity()).getConferencesNumber());
                 for(SipBuddy s : mSipBuddies){
                     if(s.getPushToTalk()) {
-                        s.sendIM(JsonCommend.BROADCAST_LAUNCH + data.toString());
+                        s.sendIM(JsonCommand.BROADCAST_LAUNCH + data.toString(), true);
                     }
                 }
             }catch (Exception e){
@@ -157,6 +147,7 @@ public class PushToTalkFragment extends Fragment {
             SipCall.PushToTalkCall();
         });
         updateUI();
+
         return view;
     }
 
