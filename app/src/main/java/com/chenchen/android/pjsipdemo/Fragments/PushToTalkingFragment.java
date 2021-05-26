@@ -20,12 +20,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chenchen.android.pjsipdemo.Dao.DBReaderContract;
 import com.chenchen.android.pjsipdemo.Domain.Setting;
 import com.chenchen.android.pjsipdemo.Domain.SipAccount;
 import com.chenchen.android.pjsipdemo.Domain.SipBuddy;
 import com.chenchen.android.pjsipdemo.Domain.SipBuddyList;
+import com.chenchen.android.pjsipdemo.Domain.User;
 import com.chenchen.android.pjsipdemo.JsonCommand;
 import com.chenchen.android.pjsipdemo.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Objects;
@@ -93,6 +98,20 @@ public class PushToTalkingFragment  extends Fragment {
         talkBtn = v.findViewById(R.id.talk_btn);
 
         hangUpBtn.setOnClickListener(v1 -> {
+            SipAccount.getInstance().getCall().MuteMicrophone(false);
+            List<SipBuddy> mSipBuddies = SipBuddyList.getInstance().getSipBuddies();
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put(DBReaderContract.BuddyEntry.COLUMN_NAME_NAME, User.getInstance(getActivity()).getUserName());
+                jsonObject.put(DBReaderContract.BuddyEntry.COLUMN_NAME_URL, User.getInstance(getActivity()).getUrl());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            for(SipBuddy s : mSipBuddies){
+                if(s.getPushToTalk()) {
+                    s.sendIM(JsonCommand.BROADCAST_EXIT + jsonObject.toString(), true);
+                }
+            }
             Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_FIRST_USER);
             getActivity().finish();
         });

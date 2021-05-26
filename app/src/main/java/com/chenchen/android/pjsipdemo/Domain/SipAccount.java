@@ -154,6 +154,19 @@ public class SipAccount extends Account {
             return;
         }
 
+        if("/".equals(msgBody.substring(0, 1)) && msgBody.contains(JsonCommand.BROADCAST_EXIT)){
+            String s = msgBody.substring(JsonCommand.BROADCAST_EXIT.length());
+            try{
+                JSONObject buddy = new JSONObject(s);
+                String name = buddy.getString(DBReaderContract.BuddyEntry.COLUMN_NAME_NAME);
+                String url = buddy.getString(DBReaderContract.BuddyEntry.COLUMN_NAME_URL);
+                SipBuddy sipBuddy = SipBuddyList.getInstance().getSipBuddy(name);
+                sipBuddy.setPushToTalk(false);
+            }catch (Exception e){
+                Logger.error(LOG_TAG, "json", e);
+            }
+            return;
+        }
         String fromUri = prm.getFromUri();
         String buddyName = fromUri.substring(fromUri.indexOf(':') + 1, fromUri.indexOf("@"));
         String buddyUrl = fromUri.substring(fromUri.indexOf('@') + 1, fromUri.indexOf(">"));

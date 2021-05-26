@@ -9,6 +9,7 @@ public class JsonCommand {
     public static String BROADCAST_LAUNCH = "/BROADCAST_LAUNCH";
     public static String BROADCAST_MUTE = "/BROADCAST_MUTE";
     public static String BROADCAST_NOT_MUTE = "/BROADCAST_NOT_MUTE";
+    public static String BROADCAST_EXIT = "/BROADCAST_EXIT";
 
     private JsonCommand(){
 
